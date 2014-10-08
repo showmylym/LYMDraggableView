@@ -9,12 +9,17 @@
 /* Begin PBXBuildFile section */
 		6713A86D19D90EAC00FFFACC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6713A86C19D90EAC00FFFACC /* main.m */; };
 		6713A87019D90EAC00FFFACC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6713A86F19D90EAC00FFFACC /* AppDelegate.m */; };
-		6713A87319D90EAC00FFFACC /* RMToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6713A87219D90EAC00FFFACC /* RMToolsViewController.m */; };
-		6713A87619D90EAC00FFFACC /* RMDemosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6713A87519D90EAC00FFFACC /* RMDemosViewController.m */; };
 		6713A87919D90EAC00FFFACC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6713A87719D90EAC00FFFACC /* Main.storyboard */; };
 		6713A87B19D90EAC00FFFACC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6713A87A19D90EAC00FFFACC /* Images.xcassets */; };
 		6713A87E19D90EAC00FFFACC /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6713A87C19D90EAC00FFFACC /* LaunchScreen.xib */; };
 		6713A88A19D90EAD00FFFACC /* UltimatePracticeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6713A88919D90EAD00FFFACC /* UltimatePracticeTests.m */; };
+		679AA3B319E4F55100E671CE /* RMDemosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3AF19E4F55100E671CE /* RMDemosViewController.m */; };
+		679AA3B419E4F55100E671CE /* RMToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3B219E4F55100E671CE /* RMToolsViewController.m */; };
+		679AA3B819E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3B719E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m */; };
+		679AA3BA19E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 679AA3B919E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib */; };
+		679AA3BE19E51E8E00E671CE /* RMCommonFunc.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3BD19E51E8E00E671CE /* RMCommonFunc.m */; };
+		679AA3C619E5245200E671CE /* RMDynamicClassMod.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3C519E5245200E671CE /* RMDynamicClassMod.m */; };
+		679AA3CE19E5438100E671CE /* RMDraggableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3CD19E5438100E671CE /* RMDraggableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,16 +38,25 @@
 		6713A86C19D90EAC00FFFACC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6713A86E19D90EAC00FFFACC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6713A86F19D90EAC00FFFACC /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		6713A87119D90EAC00FFFACC /* RMToolsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RMToolsViewController.h; sourceTree = "<group>"; };
-		6713A87219D90EAC00FFFACC /* RMToolsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RMToolsViewController.m; sourceTree = "<group>"; };
-		6713A87419D90EAC00FFFACC /* RMDemosViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RMDemosViewController.h; sourceTree = "<group>"; };
-		6713A87519D90EAC00FFFACC /* RMDemosViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RMDemosViewController.m; sourceTree = "<group>"; };
 		6713A87819D90EAC00FFFACC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6713A87A19D90EAC00FFFACC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6713A87D19D90EAC00FFFACC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		6713A88319D90EAD00FFFACC /* UltimatePracticeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UltimatePracticeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6713A88819D90EAD00FFFACC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6713A88919D90EAD00FFFACC /* UltimatePracticeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UltimatePracticeTests.m; sourceTree = "<group>"; };
+		679AA3AE19E4F55100E671CE /* RMDemosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDemosViewController.h; sourceTree = "<group>"; };
+		679AA3AF19E4F55100E671CE /* RMDemosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDemosViewController.m; sourceTree = "<group>"; };
+		679AA3B119E4F55100E671CE /* RMToolsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMToolsViewController.h; sourceTree = "<group>"; };
+		679AA3B219E4F55100E671CE /* RMToolsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMToolsViewController.m; sourceTree = "<group>"; };
+		679AA3B619E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMLongTouchMoveOrRemoveViewController.h; sourceTree = "<group>"; };
+		679AA3B719E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMLongTouchMoveOrRemoveViewController.m; sourceTree = "<group>"; };
+		679AA3B919E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RMLongTouchMoveOrRemoveViewController.xib; sourceTree = "<group>"; };
+		679AA3BC19E51E8E00E671CE /* RMCommonFunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMCommonFunc.h; sourceTree = "<group>"; };
+		679AA3BD19E51E8E00E671CE /* RMCommonFunc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMCommonFunc.m; sourceTree = "<group>"; };
+		679AA3C419E5245200E671CE /* RMDynamicClassMod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDynamicClassMod.h; sourceTree = "<group>"; };
+		679AA3C519E5245200E671CE /* RMDynamicClassMod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDynamicClassMod.m; sourceTree = "<group>"; };
+		679AA3CC19E5438100E671CE /* RMDraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDraggableView.h; sourceTree = "<group>"; };
+		679AA3CD19E5438100E671CE /* RMDraggableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDraggableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,10 +100,9 @@
 			children = (
 				6713A86E19D90EAC00FFFACC /* AppDelegate.h */,
 				6713A86F19D90EAC00FFFACC /* AppDelegate.m */,
-				6713A87119D90EAC00FFFACC /* RMToolsViewController.h */,
-				6713A87219D90EAC00FFFACC /* RMToolsViewController.m */,
-				6713A87419D90EAC00FFFACC /* RMDemosViewController.h */,
-				6713A87519D90EAC00FFFACC /* RMDemosViewController.m */,
+				679AA3BB19E51E3400E671CE /* Common */,
+				679AA3AD19E4F55100E671CE /* DemoPractice */,
+				679AA3B019E4F55100E671CE /* UsefulTools */,
 				6713A87719D90EAC00FFFACC /* Main.storyboard */,
 				6713A87A19D90EAC00FFFACC /* Images.xcassets */,
 				6713A87C19D90EAC00FFFACC /* LaunchScreen.xib */,
@@ -122,6 +135,56 @@
 				6713A88819D90EAD00FFFACC /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		679AA3AD19E4F55100E671CE /* DemoPractice */ = {
+			isa = PBXGroup;
+			children = (
+				679AA3AE19E4F55100E671CE /* RMDemosViewController.h */,
+				679AA3AF19E4F55100E671CE /* RMDemosViewController.m */,
+				679AA3B519E5197800E671CE /* LongTouchMoveOrRemove */,
+			);
+			path = DemoPractice;
+			sourceTree = "<group>";
+		};
+		679AA3B019E4F55100E671CE /* UsefulTools */ = {
+			isa = PBXGroup;
+			children = (
+				679AA3B119E4F55100E671CE /* RMToolsViewController.h */,
+				679AA3B219E4F55100E671CE /* RMToolsViewController.m */,
+			);
+			path = UsefulTools;
+			sourceTree = "<group>";
+		};
+		679AA3B519E5197800E671CE /* LongTouchMoveOrRemove */ = {
+			isa = PBXGroup;
+			children = (
+				679AA3B619E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.h */,
+				679AA3B719E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m */,
+				679AA3B919E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib */,
+				679AA3CC19E5438100E671CE /* RMDraggableView.h */,
+				679AA3CD19E5438100E671CE /* RMDraggableView.m */,
+			);
+			path = LongTouchMoveOrRemove;
+			sourceTree = "<group>";
+		};
+		679AA3BB19E51E3400E671CE /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				679AA3BC19E51E8E00E671CE /* RMCommonFunc.h */,
+				679AA3BD19E51E8E00E671CE /* RMCommonFunc.m */,
+				679AA3C319E5245200E671CE /* Models */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		679AA3C319E5245200E671CE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				679AA3C419E5245200E671CE /* RMDynamicClassMod.h */,
+				679AA3C519E5245200E671CE /* RMDynamicClassMod.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -205,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6713A87919D90EAC00FFFACC /* Main.storyboard in Resources */,
+				679AA3BA19E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib in Resources */,
 				6713A87E19D90EAC00FFFACC /* LaunchScreen.xib in Resources */,
 				6713A87B19D90EAC00FFFACC /* Images.xcassets in Resources */,
 			);
@@ -224,10 +288,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6713A87619D90EAC00FFFACC /* RMDemosViewController.m in Sources */,
+				679AA3BE19E51E8E00E671CE /* RMCommonFunc.m in Sources */,
+				679AA3B819E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m in Sources */,
 				6713A87019D90EAC00FFFACC /* AppDelegate.m in Sources */,
-				6713A87319D90EAC00FFFACC /* RMToolsViewController.m in Sources */,
+				679AA3C619E5245200E671CE /* RMDynamicClassMod.m in Sources */,
+				679AA3B419E4F55100E671CE /* RMToolsViewController.m in Sources */,
 				6713A86D19D90EAC00FFFACC /* main.m in Sources */,
+				679AA3B319E4F55100E671CE /* RMDemosViewController.m in Sources */,
+				679AA3CE19E5438100E671CE /* RMDraggableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +493,7 @@
 				6713A88F19D90EAD00FFFACC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6713A89019D90EAD00FFFACC /* Build configuration list for PBXNativeTarget "UltimatePracticeTests" */ = {
 			isa = XCConfigurationList;
@@ -433,6 +502,7 @@
 				6713A89219D90EAD00FFFACC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

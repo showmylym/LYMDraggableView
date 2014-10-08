@@ -1,22 +1,27 @@
 //
-//  SecondViewController.m
+//  FirstViewController.m
 //  UltimatePractice
 //
-//  Created by leiym on 9/29/14.
+//  Created by Jerry on 9/29/14.
 //  Copyright (c) 2014 RayManning. All rights reserved.
 //
 
-#import "RMDemosViewController.h"
+#import "RMToolsViewController.h"
 
-@interface RMDemosViewController ()
+@interface RMToolsViewController ()
 
 @end
 
-@implementation RMDemosViewController
+@implementation RMToolsViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
 }
 
 - (void)didReceiveMemoryWarning {

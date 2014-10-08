@@ -1,15 +1,13 @@
 //
-//  FirstViewController.h
+//  RMDraggableView.h
 //  UltimatePractice
 //
-//  Created by leiym on 9/29/14.
+//  Created by Jerry on 10/8/14.
 //  Copyright (c) 2014 RayManning. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface RMToolsViewController : UIViewController
-
+@interface RMDraggableView : UIView
 
 @end
-
