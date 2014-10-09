@@ -20,6 +20,7 @@
 		679AA3BE19E51E8E00E671CE /* RMCommonFunc.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3BD19E51E8E00E671CE /* RMCommonFunc.m */; };
 		679AA3C619E5245200E671CE /* RMDynamicClassMod.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3C519E5245200E671CE /* RMDynamicClassMod.m */; };
 		679AA3CE19E5438100E671CE /* RMDraggableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3CD19E5438100E671CE /* RMDraggableView.m */; };
+		679AA3D119E630E200E671CE /* RMDraggableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA3D019E630E200E671CE /* RMDraggableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,8 @@
 		679AA3C519E5245200E671CE /* RMDynamicClassMod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDynamicClassMod.m; sourceTree = "<group>"; };
 		679AA3CC19E5438100E671CE /* RMDraggableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDraggableView.h; sourceTree = "<group>"; };
 		679AA3CD19E5438100E671CE /* RMDraggableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDraggableView.m; sourceTree = "<group>"; };
+		679AA3CF19E630E200E671CE /* RMDraggableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDraggableViewCell.h; sourceTree = "<group>"; };
+		679AA3D019E630E200E671CE /* RMDraggableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDraggableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +167,8 @@
 				679AA3B919E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib */,
 				679AA3CC19E5438100E671CE /* RMDraggableView.h */,
 				679AA3CD19E5438100E671CE /* RMDraggableView.m */,
+				679AA3CF19E630E200E671CE /* RMDraggableViewCell.h */,
+				679AA3D019E630E200E671CE /* RMDraggableViewCell.m */,
 			);
 			path = LongTouchMoveOrRemove;
 			sourceTree = "<group>";
@@ -290,6 +295,7 @@
 			files = (
 				679AA3BE19E51E8E00E671CE /* RMCommonFunc.m in Sources */,
 				679AA3B819E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m in Sources */,
+				679AA3D119E630E200E671CE /* RMDraggableViewCell.m in Sources */,
 				6713A87019D90EAC00FFFACC /* AppDelegate.m in Sources */,
 				679AA3C619E5245200E671CE /* RMDynamicClassMod.m in Sources */,
 				679AA3B419E4F55100E671CE /* RMToolsViewController.m in Sources */,
