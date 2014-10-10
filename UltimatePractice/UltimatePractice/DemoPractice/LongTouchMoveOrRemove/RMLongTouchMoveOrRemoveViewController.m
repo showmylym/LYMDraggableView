@@ -2,7 +2,7 @@
 //  RMLongTouchMoveOrRemoveViewController.m
 //  UltimatePractice
 //
-//  Created by Jerry on 10/8/14.
+//  Created by Jerry Ray on 10/8/14.
 //  Copyright (c) 2014 RayManning. All rights reserved.
 //
 
@@ -21,11 +21,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+    //cal scaled space, to adapt screen after iPhone 6
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat scaleFactor = screenSize.width / 320.0;
+
     
-    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:self.view.frame];
+    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:self.view.frame layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
+    self.mainDraggableView.backgroundColor = [UIColor blueColor];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
-    [self.mainScrollView addSubview:self.mainDraggableView];
+    [self.view addSubview:self.mainDraggableView];
 
 }
 
@@ -44,21 +50,30 @@
 }
 */
 
-- (NSInteger)numberOfSectionsInDraggableView:(RMDraggableView *)draggableView {
-    return 10;
+- (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView {
+    return 4;
 }
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfItemsInSection:(NSInteger)section {
-    if (section == 9) {
+- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)section {
+    if (section == 3) {
         return 3;
     }
     return 4;
 }
 
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView indexPath:(NSIndexPath *)indexPath {
+- (CGSize)cellSizeInDraggableView:(RMDraggableView *)draggableView {
+    return CGSizeMake(60.0, 80.0);
+}
+
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
-    cell.imageView.image = nil;
-    cell.textLabel.text = [NSString stringWithFormat:@"%d", (indexPath.section + 1) * (indexPath.row + 1)];
+    NSString * imgName = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.column + 1)];
+    cell.imageView.image = [UIImage imageNamed:imgName];
+    cell.textLabel.text = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.row + 1)];
     return cell;
+}
+
+- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
+    
 }
 
 @end

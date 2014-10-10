@@ -2,7 +2,7 @@
 //  DynamicClassMod.h
 //  UltimatePractice
 //
-//  Created by Jerry on 10/8/14.
+//  Created by Jerry Ray on 10/8/14.
 //  Copyright (c) 2014 RayManning. All rights reserved.
 //
 

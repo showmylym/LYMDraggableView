@@ -2,16 +2,26 @@
 //  RMDraggableView.h
 //  UltimatePractice
 //
-//  Created by Jerry on 10/8/14.
+//  Created by Jerry Ray on 10/8/14.
 //  Copyright (c) 2014 RayManning. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "RMDraggableViewCell.h"
 
+#define MarginAutoCaled   -1.0
+#define SpaceAutoCaled    -1.0
+
+
 typedef enum {
-    RMDraggableViewLayoutBySpaceBetweenItems = 0,
-    RMDraggableViewLayoutByItemNum = 1,
+    /**
+     *  Keep cell size consistent, auto-adapt the space between columns. If there is enough space, then put into current row one more cell.
+     */
+//    RMDraggableViewLayoutByCellSize = 0,
+    /**
+     *  Keep the number of columns consistent, auto-adapt the size of cell and the space between items as the same scale-factor.
+     */
+    RMDraggableViewLayoutByColumnNum = 1,
 } RMDraggableViewLayout;
 
 
@@ -23,10 +33,10 @@ typedef enum {
 @protocol RMDraggableViewDataSource <NSObject>
 
 @required
-- (NSInteger)numberOfSectionsInDraggableView:(RMDraggableView *)draggableView;
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfItemsInSection:(NSInteger)section;
+- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)section;
 @optional
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndexPath:(NSIndexPath *)indexPath;
+- (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView;
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -35,6 +45,12 @@ typedef enum {
 
 @protocol RMDraggableViewDelegate <NSObject>
 
+@required
+- (CGSize)cellSizeInDraggableView:(RMDraggableView *)draggableView;
+
+
+@optional
+
 - (BOOL)canShakeWhenEditing;
 - (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndexPath:(NSIndexPath *)indexPath;
 - (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(NSIndexPath *)indexPath;
@@ -42,7 +58,6 @@ typedef enum {
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
 
-- (CGRect)draggableView:(RMDraggableView *)draggableView cellSizeForIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -50,10 +65,10 @@ typedef enum {
 
 @interface NSIndexPath (RMDraggableView)
 
-@property (nonatomic, assign, readonly) NSInteger section;
+@property (nonatomic, assign, readonly) NSInteger row;
 @property (nonatomic, assign, readonly) NSInteger column;
 
-+ (instancetype)IndexPathWithSection:(NSInteger)section column:(NSInteger)column;
++ (instancetype)IndexPathWithRow:(NSInteger)row column:(NSInteger)column;
 
 @end
 
@@ -66,20 +81,29 @@ typedef enum {
 
 @property (nonatomic, assign) CGFloat hMargin;
 @property (nonatomic, assign) CGFloat vMargin;
-@property (nonatomic, assign) CGFloat hSpace;
-@property (nonatomic, assign) CGFloat vSpace;
-
 @property (nonatomic, assign) RMDraggableViewLayout draggableViewLayout;
 
-- (instancetype)initWithHorizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin horizontalSpace:(CGFloat)hSpace verticalSpace:(CGFloat)vSpace;
-- (instancetype)initWithColumnNum:(NSInteger)columnNum horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin;
+/**
+ *  Initialize draggable view.
+ *
+ *  @param frame      view frame. Height can be 0.0, as it will auto-adapt.
+ *  @param layoutType For layout UI
+ *  @param hMargin    Margin of Horizontality
+ *  @param vMargin    Margin of Verticality, must set value and can't be MarginAutoCaled.
+ *  @param vSpace     Space between Columns
+ *  @param maxColumn  accepted max column value.
+ *  @return
+ */
+- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn;
+
+- (void)resizeWithFrame:(CGRect)frame;
 
 - (void)startEditing;
 - (void)endEditing;
 - (void)reloadData;
 
-- (NSInteger)numberOfSections;
-- (NSInteger)numberOfCellsInSection:(NSInteger)section;
+- (NSInteger)numberOfRows;
+- (NSInteger)numberOfColumnsInRow:(NSInteger)section;
 
 
 @end
