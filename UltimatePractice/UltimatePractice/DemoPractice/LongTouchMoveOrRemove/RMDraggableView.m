@@ -47,7 +47,12 @@ static NSInteger _column;
 - (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn {
     self = [super init];
     if (self) {
-        self.frame = frame;
+        if (frame.size.height != 0.0) {
+            self.frame = frame;
+        } else {
+            frame.size.height = 1.0;
+            self.frame = frame;
+        }
         self.draggableViewLayout = layoutType;
         self.hMargin = hMargin;
         if (vMargin == MarginAutoCaled) {

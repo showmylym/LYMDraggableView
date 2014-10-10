@@ -27,7 +27,7 @@
     CGFloat scaleFactor = screenSize.width / 320.0;
 
     
-    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:self.view.frame layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
+    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, 320.0, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
     self.mainDraggableView.backgroundColor = [UIColor blueColor];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
