@@ -66,9 +66,9 @@
 
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
-    NSString * imgName = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.column + 1)];
+    NSString * imgName = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.column + 1)];
     cell.imageView.image = [UIImage imageNamed:imgName];
-    cell.textLabel.text = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.row + 1)];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.row + 1)];
     return cell;
 }
 

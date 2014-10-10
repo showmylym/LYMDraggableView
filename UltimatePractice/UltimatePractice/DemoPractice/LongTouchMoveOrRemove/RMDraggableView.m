@@ -49,12 +49,13 @@ static NSInteger _column;
     if (self) {
         self.frame = frame;
         self.draggableViewLayout = layoutType;
-        self.vSpace = vSpace;
+        self.hMargin = hMargin;
         if (vMargin == MarginAutoCaled) {
             self.vMargin = 0.0;
         } else {
             self.vMargin = vMargin;
         }
+        self.vSpace = vSpace;
         self.maxColumn = maxColumn;
     }
     return self;
@@ -100,9 +101,9 @@ static NSInteger _column;
 
 - (void)reloadData {
     //Remove all subviews
-    for (UIView * subView in self.subviews) {
-        [subView removeFromSuperview];
-    }
+//    for (UIView * subView in self.subviews) {
+//        [subView removeFromSuperview];
+//    }
     
     
     CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
@@ -133,12 +134,13 @@ static NSInteger _column;
             NSIndexPath * indexPath = [NSIndexPath IndexPathWithRow:row column:coloumn];
             RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForColumnAtIndexPath:indexPath];
             cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
+            [cell setNeedsDisplay];
             [self addSubview:cell];
             //add up coordinates
             x += cellSize.width + hSpace;
         }
         if (row != numberOfColumns - 1) {
-            y += self.vSpace;
+            y += cellSize.height + self.vSpace;
         }
     }
     draggableViewHeight = y + self.vMargin;
