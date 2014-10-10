@@ -22,6 +22,13 @@ static NSInteger _column;
     return indexPath;
 }
 
+- (NSInteger)row {
+    return _row;
+}
+
+- (NSInteger)column {
+    return _column;
+}
 
 @end
 
@@ -79,7 +86,11 @@ static NSInteger _column;
 }
 
 - (NSInteger)numberOfColumnsInRow:(NSInteger)section {
-    return [self.dataSource draggableView:self numberOfColumnsInRow:section];
+    NSInteger number = 0;
+    if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:numberOfColumnsInRow:)]) {
+        number = [self.dataSource draggableView:self numberOfColumnsInRow:section];
+    }
+    return number;
 }
 
 - (void)resizeWithFrame:(CGRect)frame {
