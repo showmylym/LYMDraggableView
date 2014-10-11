@@ -28,7 +28,7 @@
 
     
     self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, 320.0, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
-    self.mainDraggableView.backgroundColor = [UIColor blueColor];
+    self.mainDraggableView.backgroundColor = [UIColor colorWithRed:123.0/255.0 green:123.0/255.0 blue:123.0/255.0 alpha:1.0];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
     [self.view addSubview:self.mainDraggableView];
@@ -53,8 +53,8 @@
 - (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView {
     return 4;
 }
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)section {
-    if (section == 3) {
+- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)row {
+    if (row == 3) {
         return 3;
     }
     return 4;
@@ -64,16 +64,18 @@
     return CGSizeMake(60.0, 80.0);
 }
 
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath {
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(RMIndexPath *)indexPath {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
-    NSString * imgName = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.column + 1)];
+    NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)(4 * indexPath.row) + indexPath.column + 1];
     cell.imageView.image = [UIImage imageNamed:imgName];
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.row + 1)];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)(4 * indexPath.row) + indexPath.column + 1];
     return cell;
 }
 
-- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(NSIndexPath *)indexPath {
-    
+- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath {
+    NSString * msg = [NSString stringWithFormat:@"You've just tapped row(%ld) column(%ld), named (%ld) item.", (long)indexPath.row, (long)indexPath.column, (long)(4 * indexPath.row) + indexPath.column + 1];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+    [alert show];
 }
 
 @end

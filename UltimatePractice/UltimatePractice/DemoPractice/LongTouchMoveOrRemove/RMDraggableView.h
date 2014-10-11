@@ -33,10 +33,10 @@ typedef enum {
 @protocol RMDraggableViewDataSource <NSObject>
 
 @required
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)section;
+- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)row;
 @optional
 - (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView;
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath;
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(RMIndexPath *)indexPath;
 
 @end
 
@@ -52,8 +52,8 @@ typedef enum {
 @optional
 
 - (BOOL)canShakeWhenEditing;
-- (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndexPath:(NSIndexPath *)indexPath;
-- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(NSIndexPath *)indexPath;
+- (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndexPath:(RMIndexPath *)indexPath;
+- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableView:(RMDraggableView *)draggableView xBtnPressedInCell:(RMDraggableViewCell *)itemCell;
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
@@ -63,7 +63,7 @@ typedef enum {
 
 
 
-@interface NSIndexPath (RMDraggableView)
+@interface RMIndexPath : NSObject
 
 @property (nonatomic, assign, readonly) NSInteger row;
 @property (nonatomic, assign, readonly) NSInteger column;

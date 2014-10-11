@@ -9,25 +9,21 @@
 #import "RMDraggableView.h"
 
 
+@interface RMIndexPath ()
 
-@implementation NSIndexPath (RMDraggableView)
+@property (nonatomic, assign, readwrite) NSInteger row;
+@property (nonatomic, assign, readwrite) NSInteger column;
 
-static NSInteger _row;
-static NSInteger _column;
+@end
+
+@implementation RMIndexPath
+
 
 + (instancetype)IndexPathWithRow:(NSInteger)row column:(NSInteger)column {
-    NSIndexPath * indexPath = [[NSIndexPath alloc] init];
-    _row = row;
-    _column = column;
+    RMIndexPath * indexPath = [[RMIndexPath alloc] init];
+    indexPath.row = row;
+    indexPath.column = column;
     return indexPath;
-}
-
-- (NSInteger)row {
-    return _row;
-}
-
-- (NSInteger)column {
-    return _column;
 }
 
 @end
@@ -36,6 +32,7 @@ static NSInteger _column;
 
 
 @interface RMDraggableView ()
+<RMDraggableViewCellDelegate>
 
 @property (nonatomic, assign) CGFloat vSpace;
 @property (nonatomic, assign) NSUInteger maxColumn;
@@ -135,9 +132,11 @@ static NSInteger _column;
     for (int row = 0; row < numberOfRows; row ++) {
         x = hMargin;
         NSInteger numberOfColumns = [self numberOfColumnsInRow:row];
-        for (int coloumn = 0; coloumn < numberOfColumns; coloumn ++) {
-            NSIndexPath * indexPath = [NSIndexPath IndexPathWithRow:row column:coloumn];
+        for (int column = 0; column < numberOfColumns; column ++) {
+            RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
             RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForColumnAtIndexPath:indexPath];
+            cell.delegate = self;
+            cell.indexPath = indexPath;
             cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
             [cell setNeedsDisplay];
             [self addSubview:cell];
@@ -162,6 +161,13 @@ static NSInteger _column;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
         });
+    }
+}
+
+#pragma mark - RMDraggableViewCell Delegate
+- (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didSelectCellAtIndexPath:)]) {
+        [self.delegate draggableView:self didSelectCellAtIndexPath:indexPath];
     }
 }
 

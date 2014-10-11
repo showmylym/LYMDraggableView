@@ -8,23 +8,45 @@
 
 #import <UIKit/UIKit.h>
 
+@class RMDraggableViewCell;
+@class RMIndexPath;
+
 typedef enum {
     RMDraggableViewCellTypeDefault = 0,
 } RMDraggableViewCellType;
 
 typedef enum {
-    RMDraggableViewCellCornerBtnStyleLeftTop = 0,
-    RMDraggableViewCellCornerBtnStyleRightTop = 1,
+    RMDraggableViewCellCornerBtnStyleTopLeft = 0,
+    RMDraggableViewCellCornerBtnStyleTopRight = 1,
 } RMDraggableViewCellCornerBtnStyle;
+
+
+@protocol RMDraggableViewCellDelegate <NSObject>
+
+@optional
+- (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath;
+
+@end
+
+
+
 
 @interface RMDraggableViewCell : UIView
 
+@property (nonatomic, assign) id<RMDraggableViewCellDelegate> delegate;
 @property (nonatomic, retain) UIView * contentView;
 
+//Controls in content view
 @property (nonatomic, retain) UIImageView * imageView;
 @property (nonatomic, retain) UILabel * textLabel;
 @property (nonatomic, retain) UIButton * cornerBtn;
 
+/**
+ *  IndexPath in draggable view.
+ */
+@property (nonatomic, retain) RMIndexPath * indexPath;
+
+//Flag to control logic
 @property (nonatomic) BOOL isEditing;
 
 - (instancetype)initWithStyle:(RMDraggableViewCellType)cellType;
