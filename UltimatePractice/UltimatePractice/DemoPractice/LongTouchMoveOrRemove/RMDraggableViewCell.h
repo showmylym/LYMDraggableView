@@ -12,15 +12,24 @@ typedef enum {
     RMDraggableViewCellTypeDefault = 0,
 } RMDraggableViewCellType;
 
+typedef enum {
+    RMDraggableViewCellCornerBtnStyleLeftTop = 0,
+    RMDraggableViewCellCornerBtnStyleRightTop = 1,
+} RMDraggableViewCellCornerBtnStyle;
+
 @interface RMDraggableViewCell : UIView
+
+@property (nonatomic, retain) UIView * contentView;
 
 @property (nonatomic, retain) UIImageView * imageView;
 @property (nonatomic, retain) UILabel * textLabel;
-@property (nonatomic, retain) UIButton * leftTopXBtn;
+@property (nonatomic, retain) UIButton * cornerBtn;
+
+@property (nonatomic) BOOL isEditing;
 
 - (instancetype)initWithStyle:(RMDraggableViewCellType)cellType;
 
-- (void)startEditing;
+- (void)startEditingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle;
 - (void)endEditing;
 
 @end

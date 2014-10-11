@@ -27,7 +27,7 @@
     CGFloat scaleFactor = screenSize.width / 320.0;
 
     
-    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:self.view.frame layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
+    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, 320.0, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
     self.mainDraggableView.backgroundColor = [UIColor blueColor];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
@@ -66,9 +66,9 @@
 
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(NSIndexPath *)indexPath {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
-    NSString * imgName = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.column + 1)];
+    NSString * imgName = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.column + 1)];
     cell.imageView.image = [UIImage imageNamed:imgName];
-    cell.textLabel.text = [NSString stringWithFormat:@"%d", (indexPath.row + 1) * (indexPath.row + 1)];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)(indexPath.row + 1) * (indexPath.row + 1)];
     return cell;
 }
 
