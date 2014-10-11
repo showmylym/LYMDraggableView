@@ -24,6 +24,7 @@ typedef enum {
 @protocol RMDraggableViewCellDelegate <NSObject>
 
 @optional
+- (void)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath;
@@ -40,9 +41,9 @@ typedef enum {
 @property (nonatomic, retain) UIView * contentView;
 
 //Controls in content view
-@property (nonatomic, retain) UIImageView * imageView;
-@property (nonatomic, retain) UILabel * textLabel;
-@property (nonatomic, retain) UIButton * cornerBtn;
+@property (nonatomic, retain, readonly) UIImageView * imageView;
+@property (nonatomic, retain, readonly) UILabel * textLabel;
+@property (nonatomic, retain, readonly) UIButton * cornerBtn;
 
 /**
  *  IndexPath in draggable view.
@@ -51,10 +52,11 @@ typedef enum {
 
 //Flag to control logic
 @property (nonatomic) BOOL isEditing;
+@property (nonatomic) BOOL isShaking;
 
 - (instancetype)initWithStyle:(RMDraggableViewCellType)cellType;
 
-- (void)startEditingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle;
-- (void)endEditing;
+- (void)startShakingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle;
+- (void)endShaking;
 
 @end

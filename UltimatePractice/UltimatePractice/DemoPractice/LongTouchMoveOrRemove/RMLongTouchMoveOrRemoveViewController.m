@@ -71,7 +71,13 @@
 
 - (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath {
     NSString * msg = [NSString stringWithFormat:@"You've just tapped row(%ld) column(%ld), named (%ld) item.", (long)indexPath.row, (long)indexPath.column, (long)(4 * indexPath.row) + indexPath.column + 1];
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
+    [alert show];
+}
+
+- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndexPath:(RMIndexPath *)indexPath {
+    NSString * msg = [NSString stringWithFormat:@"Corner Btn Pressed row(%ld) column(%ld), named (%ld) item.", (long)indexPath.row, (long)indexPath.column, (long)(4 * indexPath.row) + indexPath.column + 1];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
     [alert show];
 }
 

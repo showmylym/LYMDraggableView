@@ -54,7 +54,7 @@ typedef enum {
 - (BOOL)canShakeWhenEditing;
 - (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath;
-- (void)draggableView:(RMDraggableView *)draggableView xBtnPressedInCell:(RMDraggableViewCell *)itemCell;
+- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
 

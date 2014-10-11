@@ -18,9 +18,16 @@
 
 @property (nonatomic) RMDraggableViewCellCornerBtnStyle cornerBtnStyle;
 
+//Gesture
 @property (nonatomic, retain) UITapGestureRecognizer * tapGesture;
 @property (nonatomic, retain) UILongPressGestureRecognizer * longPressGesture;
 
+//Controls in content view
+@property (nonatomic, retain, readwrite) UIImageView * imageView;
+@property (nonatomic, retain, readwrite) UILabel * textLabel;
+@property (nonatomic, retain, readwrite) UIButton * cornerBtn;
+
+//Store data
 @property (nonatomic, assign) CGFloat editingZoomFactor;
 @property (nonatomic, assign) CGPoint beginningPoint;
 @property (nonatomic, assign) CGPoint beginningCenter;
@@ -47,6 +54,11 @@
         self.textLabel.text = @"test";
         self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:self.textLabel];
+        
+        self.cornerBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
+        [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        self.cornerBtn.hidden = YES;
+        [self.contentView addSubview:self.cornerBtn];
         
         //Gesture
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureTriggered:)];
@@ -89,17 +101,26 @@
     labelRect.size.height = textLabelHeight;
     self.textLabel.frame = labelRect;
     
+    CGRect cornerBtnFrame;
+    cornerBtnFrame.size.width = 10.0;
+    cornerBtnFrame.size.height = 10.0;
+    cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
+    cornerBtnFrame.origin.y = 0.0;
+    self.cornerBtn.frame = cornerBtnFrame;
+    
 }
 
 
 #pragma mark - public methods
-- (void)startEditingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle {
+- (void)startShakingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle {
     self.cornerBtnStyle = btnStyle;
-    self.isEditing = YES;
+    self.cornerBtn.hidden = NO;
+    self.isShaking = YES;
 }
 
-- (void)endEditing {
-    self.isEditing = NO;
+- (void)endShaking {
+    self.isShaking = NO;
+    self.cornerBtn.hidden = YES;
 }
 
 #pragma mark - Private methods
@@ -155,6 +176,12 @@
             
         default:
             break;
+    }
+}
+
+- (void)cornerBtnPressed:(UIButton *)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnPressedWithIndexPath:)]) {
+        [self.delegate draggableViewCell:self cornerBtnPressedWithIndexPath:self.indexPath];
     }
 }
 

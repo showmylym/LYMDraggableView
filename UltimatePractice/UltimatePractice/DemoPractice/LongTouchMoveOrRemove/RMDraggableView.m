@@ -175,4 +175,18 @@
     }
 }
 
+- (void)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(RMIndexPath *)indexPath {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnPressedAtIndexPath:)]) {
+        [self.delegate draggableView:self cornerBtnPressedAtIndexPath:indexPath];
+    }
+}
+
+- (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath {
+    [cell startShakingWithCornerBtnStyle:RMDraggableViewCellCornerBtnStyleTopRight];
+}
+
+- (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath {
+    [cell endShaking];
+}
+
 @end
