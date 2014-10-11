@@ -37,6 +37,8 @@
 @property (nonatomic, assign) CGFloat vSpace;
 @property (nonatomic, assign) NSUInteger maxColumn;
 
+@property (nonatomic, retain) NSMutableArray * muArrCells;
+
 @end
 
 @implementation RMDraggableView
@@ -59,6 +61,7 @@
         }
         self.vSpace = vSpace;
         self.maxColumn = maxColumn;
+        self.muArrCells = [NSMutableArray arrayWithCapacity:20];
     }
     return self;
 }
@@ -140,6 +143,7 @@
             cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
             [cell setNeedsDisplay];
             [self addSubview:cell];
+            [self.muArrCells addObject:cell];
             //add up coordinates
             x += cellSize.width + hSpace;
         }

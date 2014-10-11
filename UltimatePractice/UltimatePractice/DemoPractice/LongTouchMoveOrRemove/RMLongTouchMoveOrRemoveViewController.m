@@ -22,9 +22,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
-    //cal scaled space, to adapt screen after iPhone 6
-    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    CGFloat scaleFactor = screenSize.width / 320.0;
 
     
     self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, 320.0, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
