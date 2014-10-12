@@ -11,15 +11,15 @@
 
 @interface RMIndexPath ()
 
-@property (nonatomic, assign, readwrite) NSInteger row;
-@property (nonatomic, assign, readwrite) NSInteger column;
+@property (nonatomic, assign, readwrite) NSUInteger row;
+@property (nonatomic, assign, readwrite) NSUInteger column;
 
 @end
 
 @implementation RMIndexPath
 
 
-+ (instancetype)IndexPathWithRow:(NSInteger)row column:(NSInteger)column {
++ (instancetype)IndexPathWithRow:(NSUInteger)row column:(NSUInteger)column {
     RMIndexPath * indexPath = [[RMIndexPath alloc] init];
     indexPath.row = row;
     indexPath.column = column;
@@ -81,20 +81,26 @@
 
 
 #pragma mark - Private methods
-
-#pragma mark - Public methods
-- (NSInteger)numberOfRows {
-    NSInteger number = 1;
-    if (self.dataSource && [self.dataSource respondsToSelector:@selector(numberOfRowsInDraggableView:)]) {
-        number = [self.dataSource numberOfRowsInDraggableView:self];
+- (RMIndexPath *)indexPathFromIndex:(NSInteger)index {
+    NSInteger row = 0;
+    NSInteger column = 0;
+    if (self.maxColumn != 0) {
+        row = index / self.maxColumn;
+        column = index % self.maxColumn;
     }
-    return number;
+    RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
+    return indexPath;
 }
 
-- (NSInteger)numberOfColumnsInRow:(NSInteger)section {
-    NSInteger number = 0;
-    if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:numberOfColumnsInRow:)]) {
-        number = [self.dataSource draggableView:self numberOfColumnsInRow:section];
+- (NSUInteger)indexFromIndexPath:(RMIndexPath *)indexPath {
+    return indexPath.row * self.maxColumn + indexPath.column;
+}
+
+#pragma mark - Public methods
+- (NSUInteger)numberOfItems {
+    NSUInteger number = 0;
+    if (self.dataSource && [self.dataSource respondsToSelector:@selector(numberOfCellsInDraggableView:)]) {
+        number = [self.dataSource numberOfCellsInDraggableView:self];
     }
     return number;
 }
@@ -106,11 +112,45 @@
 
 - (void)reloadData {
     //Remove all subviews
-//    for (UIView * subView in self.subviews) {
-//        [subView removeFromSuperview];
-//    }
+    for (UIView * subView in self.subviews) {
+        [subView removeFromSuperview];
+    }
+    [self.muArrCells removeAllObjects];
     
-    
+    //Create cells and get draggable view's max frame
+    NSInteger numberOfItems = [self numberOfItems];
+    for (int index = 0; index < numberOfItems; index ++) {
+        RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForIndex:index];
+        cell.delegate = self;
+        cell.indexPath = [self indexPathFromIndex:index];
+        [self addSubview:cell];
+        [self.muArrCells addObject:cell];
+    }
+    //construct new frame
+    CGRect draggableViewNewFrame = [self resetLayout];
+    [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
+
+    //perform call back
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:willResizeWithFrame:)]) {
+        [self.delegate draggableView:self willResizeWithFrame:draggableViewNewFrame];
+    }
+    self.frame = draggableViewNewFrame;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
+        });
+    }
+}
+
+/**
+ *  Return draggable view new frame. Set all cells frame.
+ *
+ *  @return
+ */
+- (CGRect)resetLayout {
+   
+    NSUInteger numberOfItems = [self numberOfItems];
+
     CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
     CGFloat viewWidth = self.frame.size.width;
     CGFloat hSpace = 0.0;
@@ -128,22 +168,29 @@
     //x and y is to specify coordinate of draggableViewCell
     CGFloat x = hMargin;
     CGFloat y = vMargin;
-
+    
     CGFloat draggableViewHeight = 0.0;
     //Create cells and get draggable view's max frame
-    NSInteger numberOfRows = [self numberOfRows];
+    NSInteger numberOfRows = numberOfItems / self.maxColumn;
+    if (numberOfItems % self.maxColumn > 0) {
+        //Treat it as the last line
+        numberOfRows ++;
+    }
     for (int row = 0; row < numberOfRows; row ++) {
         x = hMargin;
-        NSInteger numberOfColumns = [self numberOfColumnsInRow:row];
+        NSUInteger numberOfColumns = numberOfItems - row * self.maxColumn;
+        if (numberOfColumns > self.maxColumn) {
+            //Column number of the line which is not the last line
+            numberOfColumns = self.maxColumn;
+        }
+
         for (int column = 0; column < numberOfColumns; column ++) {
             RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
-            RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForColumnAtIndexPath:indexPath];
-            cell.delegate = self;
-            cell.indexPath = indexPath;
-            cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
-            [cell setNeedsDisplay];
-            [self addSubview:cell];
-            [self.muArrCells addObject:cell];
+            NSUInteger index = [self indexFromIndexPath:indexPath];
+            if (index < self.muArrCells.count) {
+                RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+                cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
+            }
             //add up coordinates
             x += cellSize.width + hSpace;
         }
@@ -155,29 +202,19 @@
     //construct new frame
     CGRect draggableViewNewFrame = self.frame;
     draggableViewNewFrame.size.height = draggableViewHeight;
-
-    //perform call back
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:willResizeWithFrame:)]) {
-        [self.delegate draggableView:self willResizeWithFrame:draggableViewNewFrame];
-    }
-    self.frame = draggableViewNewFrame;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
-        });
-    }
+    return draggableViewNewFrame;
 }
 
 #pragma mark - RMDraggableViewCell Delegate
 - (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didSelectCellAtIndexPath:)]) {
-        [self.delegate draggableView:self didSelectCellAtIndexPath:indexPath];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didSelectCellAtIndex:)]) {
+        [self.delegate draggableView:self didSelectCellAtIndex:[self indexFromIndexPath:indexPath]];
     }
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(RMIndexPath *)indexPath {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnPressedAtIndexPath:)]) {
-        [self.delegate draggableView:self cornerBtnPressedAtIndexPath:indexPath];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnPressedAtIndex:)]) {
+        [self.delegate draggableView:self cornerBtnPressedAtIndex:[self indexFromIndexPath:indexPath]];
     }
 }
 

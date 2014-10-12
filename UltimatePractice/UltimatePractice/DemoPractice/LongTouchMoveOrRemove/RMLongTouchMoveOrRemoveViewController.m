@@ -47,36 +47,30 @@
 }
 */
 
-- (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView {
-    return 4;
-}
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)row {
-    if (row == 3) {
-        return 3;
-    }
-    return 4;
+- (NSInteger)numberOfCellsInDraggableView:(RMDraggableView *)draggableView {
+    return 15;
 }
 
 - (CGSize)cellSizeInDraggableView:(RMDraggableView *)draggableView {
     return CGSizeMake(60.0, 80.0);
 }
 
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(RMIndexPath *)indexPath {
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
-    NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)(4 * indexPath.row) + indexPath.column + 1];
+    NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)index + 1];
     cell.imageView.image = [UIImage imageNamed:imgName];
-    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)(4 * indexPath.row) + indexPath.column + 1];
+    cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)index + 1];
     return cell;
 }
 
-- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath {
-    NSString * msg = [NSString stringWithFormat:@"You've just tapped row(%ld) column(%ld), named (%ld) item.", (long)indexPath.row, (long)indexPath.column, (long)(4 * indexPath.row) + indexPath.column + 1];
+- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndex:(NSUInteger)index {
+    NSString * msg = [NSString stringWithFormat:@"You've just tapped index(%ld), named (%ld) item.", (long)index + 1, (long)index + 1];
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
     [alert show];
 }
 
-- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndexPath:(RMIndexPath *)indexPath {
-    NSString * msg = [NSString stringWithFormat:@"Corner Btn Pressed row(%ld) column(%ld), named (%ld) item.", (long)indexPath.row, (long)indexPath.column, (long)(4 * indexPath.row) + indexPath.column + 1];
+- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index {
+    NSString * msg = [NSString stringWithFormat:@"Corner Btn Pressed at index(%ld), named (%ld) item.", (long)index + 1, (long)index + 1];
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
     [alert show];
 }

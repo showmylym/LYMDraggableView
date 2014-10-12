@@ -33,10 +33,11 @@ typedef enum {
 @protocol RMDraggableViewDataSource <NSObject>
 
 @required
-- (NSInteger)draggableView:(RMDraggableView *)draggableView numberOfColumnsInRow:(NSInteger)row;
+- (NSInteger)numberOfCellsInDraggableView:(RMDraggableView *)draggableView;
+- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index;
+
 @optional
-- (NSInteger)numberOfRowsInDraggableView:(RMDraggableView *)draggableView;
-- (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForColumnAtIndexPath:(RMIndexPath *)indexPath;
+
 
 @end
 
@@ -52,9 +53,9 @@ typedef enum {
 @optional
 
 - (BOOL)canShakeWhenEditing;
-- (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndexPath:(RMIndexPath *)indexPath;
-- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndexPath:(RMIndexPath *)indexPath;
-- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndexPath:(RMIndexPath *)indexPath;
+- (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndex:(NSUInteger)index;
+- (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndex:(NSUInteger)index;
+- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
 
@@ -65,10 +66,10 @@ typedef enum {
 
 @interface RMIndexPath : NSObject
 
-@property (nonatomic, assign, readonly) NSInteger row;
-@property (nonatomic, assign, readonly) NSInteger column;
+@property (nonatomic, assign, readonly) NSUInteger row;
+@property (nonatomic, assign, readonly) NSUInteger column;
 
-+ (instancetype)IndexPathWithRow:(NSInteger)row column:(NSInteger)column;
++ (instancetype)IndexPathWithRow:(NSUInteger)row column:(NSUInteger)column;
 
 @end
 
@@ -102,8 +103,7 @@ typedef enum {
 - (void)endEditing;
 - (void)reloadData;
 
-- (NSInteger)numberOfRows;
-- (NSInteger)numberOfColumnsInRow:(NSInteger)section;
+- (NSUInteger)numberOfItems;
 
 
 @end
