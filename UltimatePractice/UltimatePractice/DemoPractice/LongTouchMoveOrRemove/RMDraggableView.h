@@ -37,7 +37,7 @@ typedef enum {
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index;
 
 @optional
-
+- (void)draggableView:(RMDraggableView *)draggableView moveItemFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
 
@@ -64,12 +64,13 @@ typedef enum {
 
 
 
-@interface RMIndexPath : NSObject
+@interface RMIndexPath : NSObject <NSCopying>
 
 @property (nonatomic, assign, readonly) NSUInteger row;
 @property (nonatomic, assign, readonly) NSUInteger column;
 
 + (instancetype)IndexPathWithRow:(NSUInteger)row column:(NSUInteger)column;
+- (BOOL)isEqual:(RMIndexPath *)object;
 
 @end
 

@@ -39,6 +39,7 @@ typedef enum {
 @interface RMDraggableViewCell : UIView
 
 @property (nonatomic, assign) id<RMDraggableViewCellDelegate> delegate;
+@property (nonatomic) RMDraggableViewCellCornerBtnStyle cornerBtnStyle;
 @property (nonatomic, retain) UIView * contentView;
 
 //Controls in content view
@@ -55,9 +56,9 @@ typedef enum {
 @property (nonatomic) BOOL isEditing;
 @property (nonatomic) BOOL isShaking;
 
-- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType;
+- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
 
-- (void)startShakingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle;
+- (void)startShaking;
 - (void)endShaking;
 
 @end

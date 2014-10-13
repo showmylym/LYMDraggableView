@@ -16,7 +16,6 @@
 
 @interface RMDraggableViewCell ()
 
-@property (nonatomic) RMDraggableViewCellCornerBtnStyle cornerBtnStyle;
 
 //Gesture
 @property (nonatomic, retain) UITapGestureRecognizer * tapGesture;
@@ -36,7 +35,7 @@
 
 @implementation RMDraggableViewCell
 
-- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType {
+- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
     self = [super init];
     if (self) {
         //cell content view
@@ -60,6 +59,8 @@
         self.cornerBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
         self.cornerBtn.hidden = YES;
         [self.contentView addSubview:self.cornerBtn];
+        
+        self.cornerBtnStyle = cornerBtnStyle;
         
         //Gesture
         self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureTriggered:)];
@@ -114,8 +115,7 @@
 
 
 #pragma mark - public methods
-- (void)startShakingWithCornerBtnStyle:(RMDraggableViewCellCornerBtnStyle)btnStyle {
-    self.cornerBtnStyle = btnStyle;
+- (void)startShaking {
     self.cornerBtn.hidden = NO;
     self.isShaking = YES;
 }

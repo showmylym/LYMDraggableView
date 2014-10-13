@@ -23,12 +23,17 @@
     // Do any additional setup after loading the view.
 
 
-    
-    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, 320.0, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    CGFloat scaleFactor = screenSize.width / 320.0;
+
+    CGFloat width = 320.0 * scaleFactor;
+    self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, width, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
     self.mainDraggableView.backgroundColor = [UIColor colorWithRed:123.0/255.0 green:123.0/255.0 blue:123.0/255.0 alpha:1.0];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
     [self.view addSubview:self.mainDraggableView];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(editBarButtonItemPressed:)];
 
 }
 
@@ -47,6 +52,10 @@
 }
 */
 
+- (void)editBarButtonItemPressed:(UIBarButtonItem *)barButtonItem {
+    [self.mainDraggableView endEditing];
+}
+
 - (NSInteger)numberOfCellsInDraggableView:(RMDraggableView *)draggableView {
     return 15;
 }
@@ -60,7 +69,7 @@
 }
 
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
-    RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
+    RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:RMDraggableViewCellCornerBtnStyleTopRight];
     NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)index + 1];
     cell.imageView.image = [UIImage imageNamed:imgName];
     cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)index + 1];
@@ -77,6 +86,13 @@
     NSString * msg = [NSString stringWithFormat:@"Corner Btn Pressed at index(%ld), named (%ld) item.", (long)index + 1, (long)index + 1];
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Info" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
     [alert show];
+}
+
+- (void)draggableView:(RMDraggableView *)draggableView moveItemFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
+    NSString * msg = [NSString stringWithFormat:@"Item has been moved from (%ld) to (%ld).", (long)fromIndex + 1, (long)toIndex + 1];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Move Result" message:msg delegate:nil cancelButtonTitle:@"Got it" otherButtonTitles:nil];
+    [alert show];
+
 }
 
 @end

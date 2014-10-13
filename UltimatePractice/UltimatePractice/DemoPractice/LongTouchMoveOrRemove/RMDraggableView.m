@@ -30,6 +30,19 @@
     return [NSString stringWithFormat:@"row (%ld), column (%ld).", (long)self.row, (long)self.column];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    RMIndexPath * copy = [[self class] IndexPathWithRow:self.row column:self.column];
+    return copy;
+}
+
+- (BOOL)isEqual:(RMIndexPath *)object {
+    BOOL isEqual = NO;
+    if (self.row == object.row && self.column == object.column) {
+        isEqual = YES;
+    }
+    return isEqual;
+}
+
 @end
 
 
@@ -42,7 +55,9 @@
 @property (nonatomic, assign) NSUInteger maxColumn;
 
 @property (nonatomic, retain) NSMutableArray * muArrCells;
-@property (nonatomic, retain) RMIndexPath * indexPathCellDragging;
+@property (nonatomic, retain) RMIndexPath * indexPathOfCellDragging;
+@property (nonatomic, retain) RMIndexPath * originalIndexPathOfCellDragging;
+
 
 @end
 
@@ -202,7 +217,7 @@
             NSUInteger index = [self indexFromIndexPath:indexPath];
             //Reset frame of cells except the cell dragging.
             BOOL needChangeLayout = YES;
-            if (self.indexPathCellDragging != nil && index == [self indexFromIndexPath:self.indexPathCellDragging]) {
+            if (self.indexPathOfCellDragging != nil && index == [self indexFromIndexPath:self.indexPathOfCellDragging]) {
                 //The cell is dragging, needn't to reset its frame. It locates where is finger staying.
                 needChangeLayout = NO;
             }
@@ -222,6 +237,16 @@
     CGRect draggableViewNewFrame = self.frame;
     draggableViewNewFrame.size.height = draggableViewHeight;
     return draggableViewNewFrame;
+}
+
+- (void)startEditing {
+    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+
+}
+
+- (void)endEditing {
+    [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
+
 }
 
 #pragma mark - RMDraggableViewCell Delegate
@@ -245,13 +270,15 @@
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath {
-    [cell startShakingWithCornerBtnStyle:RMDraggableViewCellCornerBtnStyleTopRight];
+    if (self.originalIndexPathOfCellDragging == nil) {
+        self.originalIndexPathOfCellDragging = [indexPath copy];
+    }
+    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
     //Store the indexpath value of cell which is dragging.
-    self.indexPathCellDragging = indexPath;
-    
+    self.indexPathOfCellDragging = indexPath;
     CGRect draggingCellFrame = cell.frame;
     NSArray * arrCells = [NSArray arrayWithArray:self.muArrCells];
     for (int i = 0; i < arrCells.count; i ++) {
@@ -288,13 +315,18 @@
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath {
-    self.indexPathCellDragging = nil;
-    [cell endShaking];
-    
+    self.indexPathOfCellDragging = nil;
     //Use easyInOut style to play animation.
     [UIView animateWithDuration:0.4 animations:^{
         [self resetLayout];
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:moveItemFromIndex:toIndex:)]) {
+            CGFloat fromIndex = [self indexFromIndexPath:self.originalIndexPathOfCellDragging];
+            CGFloat toIndex = [self indexFromIndexPath:indexPath];
+            [self.dataSource draggableView:self moveItemFromIndex:fromIndex toIndex:toIndex];
+        }
+        self.originalIndexPathOfCellDragging = nil;
+    }];
 }
 
 @end
