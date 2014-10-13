@@ -14,6 +14,8 @@
 
 @property (nonatomic, retain) RMDraggableView * mainDraggableView;
 
+@property (nonatomic, assign) CGFloat scaleFactor;
+
 @end
 
 @implementation RMLongTouchMoveOrRemoveViewController
@@ -24,9 +26,9 @@
 
 
     CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-    CGFloat scaleFactor = screenSize.width / 320.0;
+    self.scaleFactor = screenSize.width / 320.0;
 
-    CGFloat width = 320.0 * scaleFactor;
+    CGFloat width = 320.0 * self.scaleFactor;
     self.mainDraggableView = [[RMDraggableView alloc] initWithFrame:CGRectMake(0.0, 84.0, width, 1.0) layoutType:RMDraggableViewLayoutByColumnNum horizontalMargin:12.0 verticalMargin:12.0 vSpace:24.0 maxColumn:4];
     self.mainDraggableView.backgroundColor = [UIColor colorWithRed:123.0/255.0 green:123.0/255.0 blue:123.0/255.0 alpha:1.0];
     self.mainDraggableView.delegate = self;
@@ -61,11 +63,11 @@
 }
 
 - (CGSize)cellSizeInDraggableView:(RMDraggableView *)draggableView {
-    return CGSizeMake(60.0, 80.0);
+    return CGSizeMake(60.0 * self.scaleFactor, 80.0 * self.scaleFactor);
 }
 
 - (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index {
-    return CGSizeMake(25.0, 25.0);
+    return CGSizeMake(25.0 * self.scaleFactor, 25.0 * self.scaleFactor);
 }
 
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
