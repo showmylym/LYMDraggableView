@@ -7,6 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RMIndexPath.h"
+
+#define DegreesToRadians(degrees) (degrees * M_PI / 180)
+#define RadiansToDegrees(radians) (radians * 180 / M_PI)
 
 @class RMDraggableViewCell;
 @class RMIndexPath;

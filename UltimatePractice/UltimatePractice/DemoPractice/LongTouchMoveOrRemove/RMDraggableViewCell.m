@@ -118,11 +118,26 @@
 - (void)startShaking {
     self.cornerBtn.hidden = NO;
     self.isShaking = YES;
+    
+    CAKeyframeAnimation * shakingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    NSValue * value1 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+    NSValue * value2 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, - DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+    NSValue * value3 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+    shakingAnimation.values = @[value1, value2, value3];
+    shakingAnimation.duration = 0.2;
+    shakingAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    shakingAnimation.repeatCount = INFINITY;
+
+    
+    [self.layer addAnimation:shakingAnimation forKey:@"shaking"];
+    
 }
 
 - (void)endShaking {
     self.isShaking = NO;
     self.cornerBtn.hidden = YES;
+    [self.layer removeAllAnimations];
+
 }
 
 #pragma mark - Private methods

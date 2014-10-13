@@ -9,44 +9,6 @@
 #import "RMDraggableView.h"
 
 
-@interface RMIndexPath ()
-
-@property (nonatomic, assign, readwrite) NSUInteger row;
-@property (nonatomic, assign, readwrite) NSUInteger column;
-
-@end
-
-@implementation RMIndexPath
-
-
-+ (instancetype)IndexPathWithRow:(NSUInteger)row column:(NSUInteger)column {
-    RMIndexPath * indexPath = [[RMIndexPath alloc] init];
-    indexPath.row = row;
-    indexPath.column = column;
-    return indexPath;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"row (%ld), column (%ld).", (long)self.row, (long)self.column];
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    RMIndexPath * copy = [[self class] IndexPathWithRow:self.row column:self.column];
-    return copy;
-}
-
-- (BOOL)isEqual:(RMIndexPath *)object {
-    BOOL isEqual = NO;
-    if (self.row == object.row && self.column == object.column) {
-        isEqual = YES;
-    }
-    return isEqual;
-}
-
-@end
-
-
-
 
 @interface RMDraggableView ()
 <RMDraggableViewCellDelegate>
@@ -55,8 +17,8 @@
 @property (nonatomic, assign) NSUInteger maxColumn;
 
 @property (nonatomic, retain) NSMutableArray * muArrCells;
-@property (nonatomic, retain) RMIndexPath * indexPathOfCellDragging;
-@property (nonatomic, retain) RMIndexPath * originalIndexPathOfCellDragging;
+@property (nonatomic, retain) RMIndexPath * destinedIndexPath;
+@property (nonatomic, retain) RMIndexPath * originalIndexPath;
 
 
 @end
@@ -217,7 +179,7 @@
             NSUInteger index = [self indexFromIndexPath:indexPath];
             //Reset frame of cells except the cell dragging.
             BOOL needChangeLayout = YES;
-            if (self.indexPathOfCellDragging != nil && index == [self indexFromIndexPath:self.indexPathOfCellDragging]) {
+            if (self.destinedIndexPath != nil && index == [self indexFromIndexPath:self.destinedIndexPath]) {
                 //The cell is dragging, needn't to reset its frame. It locates where is finger staying.
                 needChangeLayout = NO;
             }
@@ -270,15 +232,16 @@
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath {
-    if (self.originalIndexPathOfCellDragging == nil) {
-        self.originalIndexPathOfCellDragging = [indexPath copy];
+    if (self.originalIndexPath == nil) {
+        self.originalIndexPath = [indexPath copy];
     }
     [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
     //Store the indexpath value of cell which is dragging.
-    self.indexPathOfCellDragging = indexPath;
+    self.destinedIndexPath = indexPath;
+
     CGRect draggingCellFrame = cell.frame;
     NSArray * arrCells = [NSArray arrayWithArray:self.muArrCells];
     for (int i = 0; i < arrCells.count; i ++) {
@@ -308,24 +271,24 @@
         }
     }
     
-    //Use easyInOut style to play animation.
+    //Use easeInOut style to play animation.
     [UIView animateWithDuration:0.4 animations:^{
         [self resetLayout];
     } completion:nil];
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath {
-    self.indexPathOfCellDragging = nil;
-    //Use easyInOut style to play animation.
+    self.destinedIndexPath = nil;
+    //Use easeInOut style to play animation.
     [UIView animateWithDuration:0.4 animations:^{
         [self resetLayout];
     } completion:^(BOOL finished) {
         if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:moveItemFromIndex:toIndex:)]) {
-            CGFloat fromIndex = [self indexFromIndexPath:self.originalIndexPathOfCellDragging];
+            CGFloat fromIndex = [self indexFromIndexPath:self.originalIndexPath];
             CGFloat toIndex = [self indexFromIndexPath:indexPath];
             [self.dataSource draggableView:self moveItemFromIndex:fromIndex toIndex:toIndex];
         }
-        self.originalIndexPathOfCellDragging = nil;
+        self.originalIndexPath = nil;
     }];
 }
 

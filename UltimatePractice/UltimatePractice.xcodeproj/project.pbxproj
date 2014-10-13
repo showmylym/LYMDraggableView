@@ -79,6 +79,7 @@
 		679AA44819E7E32E00E671CE /* 9c57e2f9c21ad22909c484c8133ca2b9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 679AA40E19E7E32E00E671CE /* 9c57e2f9c21ad22909c484c8133ca2b9.jpg */; };
 		679AA44919E7E32E00E671CE /* 9c6df4ed9d55b08ce2eea8d86aac2b5d.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 679AA40F19E7E32E00E671CE /* 9c6df4ed9d55b08ce2eea8d86aac2b5d.jpg */; };
 		679AA44A19E7E32E00E671CE /* 9e8efbbd9e88558baf8cd5c13df8b852.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 679AA41019E7E32E00E671CE /* 9e8efbbd9e88558baf8cd5c13df8b852.jpg */; };
+		679AA44D19EBD16C00E671CE /* RMIndexPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 679AA44C19EBD16C00E671CE /* RMIndexPath.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -176,6 +177,8 @@
 		679AA40E19E7E32E00E671CE /* 9c57e2f9c21ad22909c484c8133ca2b9.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9c57e2f9c21ad22909c484c8133ca2b9.jpg; sourceTree = "<group>"; };
 		679AA40F19E7E32E00E671CE /* 9c6df4ed9d55b08ce2eea8d86aac2b5d.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9c6df4ed9d55b08ce2eea8d86aac2b5d.jpg; sourceTree = "<group>"; };
 		679AA41019E7E32E00E671CE /* 9e8efbbd9e88558baf8cd5c13df8b852.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 9e8efbbd9e88558baf8cd5c13df8b852.jpg; sourceTree = "<group>"; };
+		679AA44B19EBD16C00E671CE /* RMIndexPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMIndexPath.h; sourceTree = "<group>"; };
+		679AA44C19EBD16C00E671CE /* RMIndexPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMIndexPath.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +285,8 @@
 				679AA3B619E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.h */,
 				679AA3B719E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m */,
 				679AA3B919E51D5D00E671CE /* RMLongTouchMoveOrRemoveViewController.xib */,
+				679AA44B19EBD16C00E671CE /* RMIndexPath.h */,
+				679AA44C19EBD16C00E671CE /* RMIndexPath.m */,
 				679AA3CC19E5438100E671CE /* RMDraggableView.h */,
 				679AA3CD19E5438100E671CE /* RMDraggableView.m */,
 				679AA3CF19E630E200E671CE /* RMDraggableViewCell.h */,
@@ -543,6 +548,7 @@
 			files = (
 				679AA3BE19E51E8E00E671CE /* RMCommonFunc.m in Sources */,
 				679AA3B819E519EA00E671CE /* RMLongTouchMoveOrRemoveViewController.m in Sources */,
+				679AA44D19EBD16C00E671CE /* RMIndexPath.m in Sources */,
 				679AA3D119E630E200E671CE /* RMDraggableViewCell.m in Sources */,
 				6713A87019D90EAC00FFFACC /* AppDelegate.m in Sources */,
 				679AA3C619E5245200E671CE /* RMDynamicClassMod.m in Sources */,
