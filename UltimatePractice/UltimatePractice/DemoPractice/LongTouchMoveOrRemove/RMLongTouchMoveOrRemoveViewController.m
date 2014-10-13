@@ -75,6 +75,7 @@
     NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)index + 1];
     cell.imageView.image = [UIImage imageNamed:imgName];
     cell.textLabel.text = [NSString stringWithFormat:@"%ld", (long)index + 1];
+        
     return cell;
 }
 

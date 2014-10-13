@@ -38,9 +38,9 @@
 - (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
     self = [super init];
     if (self) {
+        self.backgroundColor = [UIColor clearColor];
         //cell content view
         self.contentView = [[UIView alloc] init];
-        self.contentView.backgroundColor = [UIColor colorWithRed:223.0/255.0 green:223.0/255.0 blue:223.0/255.0 alpha:1.0];
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:self.contentView];
         
@@ -54,9 +54,10 @@
         self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:self.textLabel];
         
-        self.cornerBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
+        self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         self.cornerBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
+        [self.cornerBtn setBackgroundImage:[UIImage imageNamed:@"dragviewcellcornerdel@3x"] forState:UIControlStateNormal];
         self.cornerBtn.hidden = YES;
         [self.contentView addSubview:self.cornerBtn];
         
@@ -95,11 +96,16 @@
     imageViewRect.origin.x = margin;
     imageViewRect.origin.y = margin;
     imageViewRect.size.width  -= margin * 2;
-    imageViewRect.size.height -= textLabelHeight + margin * 2 - vSpace;
+    imageViewRect.size.height = imageViewRect.size.width;
     self.imageView.frame = imageViewRect;
+    self.imageView.layer.cornerRadius = self.imageView.frame.size.width / 2.0;
+    self.imageView.layer.masksToBounds = YES;
+    self.imageView.layer.shouldRasterize = YES;
+    self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+
     
     CGRect labelRect = imageViewRect;
-    labelRect.origin.y = imageViewRect.origin.y + imageViewRect.size.height;
+    labelRect.origin.y = imageViewRect.origin.y + imageViewRect.size.height + vSpace;
     labelRect.size.height = textLabelHeight;
     self.textLabel.frame = labelRect;
     
@@ -166,6 +172,12 @@
             scaleUpRect.size.height *= self.editingZoomFactor;
             self.frame = scaleUpRect;
             self.center = center;
+            
+            self.imageView.layer.cornerRadius = 0.0;
+            self.imageView.layer.masksToBounds = YES;
+            self.imageView.layer.shouldRasterize = YES;
+            self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+
         } break;
         case UIGestureRecognizerStateChanged: {
             CGPoint currentPoint = [gesture locationInView:self.superview];
@@ -185,6 +197,12 @@
             scaleDownRect.size.height /= self.editingZoomFactor;
             self.frame = scaleDownRect;
             self.center = endPoint;
+            
+            self.imageView.layer.cornerRadius = self.imageView.frame.size.width / 2.0;
+            self.imageView.layer.masksToBounds = YES;
+            self.imageView.layer.shouldRasterize = YES;
+            self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+
             
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];
