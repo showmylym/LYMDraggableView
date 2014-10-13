@@ -56,9 +56,14 @@
     [self reloadData];
 }
 
+- (void)dealloc {
+    for (RMDraggableViewCell * cell in self.muArrCells) {
+        cell.delegate = nil;
+    }
+}
 
 
-#pragma mark - property override 
+#pragma mark - property override
 
 
 
@@ -120,7 +125,7 @@
     //construct new frame
     CGRect draggableViewNewFrame = [self resetLayout];
     [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
-
+    
     //perform call back
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:willResizeWithFrame:)]) {
         [self.delegate draggableView:self willResizeWithFrame:draggableViewNewFrame];
@@ -140,7 +145,7 @@
  */
 - (CGRect)resetLayout {
     NSUInteger numberOfItems = [self numberOfItems];
-
+    
     CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
     CGFloat viewWidth = self.frame.size.width;
     CGFloat hSpace = 0.0;
@@ -173,7 +178,7 @@
             //Column number of the line which is not the last line
             numberOfColumns = self.maxColumn;
         }
-
+        
         for (int column = 0; column < numberOfColumns; column ++) {
             RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
             NSUInteger index = [self indexFromIndexPath:indexPath];
@@ -203,12 +208,12 @@
 
 - (void)startEditing {
     [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
-
+    
 }
 
 - (void)endEditing {
     [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
-
+    
 }
 
 #pragma mark - RMDraggableViewCell Delegate
@@ -241,7 +246,7 @@
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
     //Store the indexpath value of cell which is dragging.
     self.destinedIndexPath = indexPath;
-
+    
     CGRect draggingCellFrame = cell.frame;
     NSArray * arrCells = [NSArray arrayWithArray:self.muArrCells];
     for (int i = 0; i < arrCells.count; i ++) {
