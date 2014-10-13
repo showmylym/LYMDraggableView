@@ -151,26 +151,27 @@
             self.center = center;
         } break;
         case UIGestureRecognizerStateChanged: {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedDidMoveWithIndexPath:)]) {
-                [self.delegate draggableViewCell:self longPressedDidMoveWithIndexPath:self.indexPath];
-            }
             CGPoint currentPoint = [gesture locationInView:self.superview];
             CGFloat xMove = currentPoint.x - self.beginningPoint.x;
             CGFloat yMove = currentPoint.y - self.beginningPoint.y;
-            
             self.center = CGPointMake(self.beginningCenter.x + xMove, self.beginningCenter.y + yMove);
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedDidMoveWithIndexPath:)]) {
+                [self.delegate draggableViewCell:self longPressedDidMoveWithIndexPath:self.indexPath];
+            }
+
         } break;
         case UIGestureRecognizerStateEnded: {
-            if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
-                [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];
-            }
-            
             CGPoint endPoint = self.center;
             CGRect scaleDownRect = self.frame;
             scaleDownRect.size.width /= self.editingZoomFactor;
             scaleDownRect.size.height /= self.editingZoomFactor;
             self.frame = scaleDownRect;
             self.center = endPoint;
+            
+            if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
+                [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];
+            }
 
         } break;
             
