@@ -55,6 +55,10 @@
     return CGSizeMake(60.0, 80.0);
 }
 
+- (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index {
+    return CGSizeMake(25.0, 25.0);
+}
+
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault];
     NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)index + 1];

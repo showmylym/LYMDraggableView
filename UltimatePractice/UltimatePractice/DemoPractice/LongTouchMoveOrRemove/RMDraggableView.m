@@ -162,7 +162,6 @@
  *  @return
  */
 - (CGRect)resetLayout {
-   
     NSUInteger numberOfItems = [self numberOfItems];
 
     CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
@@ -238,6 +237,13 @@
     }
 }
 
+- (CGSize)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnSizeWithIndexPath:(RMIndexPath *)indexPath {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnSizeAtIndex:)]) {
+        return [self.delegate draggableView:self cornerBtnSizeAtIndex:[self indexFromIndexPath:indexPath]];
+    }
+    return CGSizeMake(15.0, 15.0);
+}
+
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath {
     [cell startShakingWithCornerBtnStyle:RMDraggableViewCellCornerBtnStyleTopRight];
 }
@@ -274,13 +280,21 @@
             break;
         }
     }
-    [self resetLayout];
+    
+    //Use easyInOut style to play animation.
+    [UIView animateWithDuration:0.4 animations:^{
+        [self resetLayout];
+    } completion:nil];
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath {
     self.indexPathCellDragging = nil;
     [cell endShaking];
-    [self resetLayout];
+    
+    //Use easyInOut style to play animation.
+    [UIView animateWithDuration:0.4 animations:^{
+        [self resetLayout];
+    } completion:nil];
 }
 
 @end

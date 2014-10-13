@@ -57,6 +57,7 @@
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
         [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
+        self.cornerBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
         self.cornerBtn.hidden = YES;
         [self.contentView addSubview:self.cornerBtn];
         
@@ -101,13 +102,14 @@
     labelRect.size.height = textLabelHeight;
     self.textLabel.frame = labelRect;
     
+    
     CGRect cornerBtnFrame;
-    cornerBtnFrame.size.width = 10.0;
-    cornerBtnFrame.size.height = 10.0;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
+        cornerBtnFrame.size = [self.delegate draggableViewCell:self cornerBtnSizeWithIndexPath:self.indexPath];
+    }
     cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
     cornerBtnFrame.origin.y = 0.0;
     self.cornerBtn.frame = cornerBtnFrame;
-    
 }
 
 
