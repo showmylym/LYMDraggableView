@@ -39,6 +39,12 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
+        self.canEdit = YES;
+        self.canShake = YES;
+        self.canMove = YES;
+        self.isEditing = NO;
+        self.isShaking = NO;
+        
         //cell content view
         self.contentView = [[UIView alloc] init];
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -52,6 +58,7 @@
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = @"test";
         self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
+        self.textLabel.lineBreakMode = UILineBreakModeClip;
         [self.contentView addSubview:self.textLabel];
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -102,7 +109,7 @@
     self.imageView.layer.masksToBounds = YES;
     self.imageView.layer.shouldRasterize = YES;
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
-
+    
     
     CGRect labelRect = imageViewRect;
     labelRect.origin.y = imageViewRect.origin.y + imageViewRect.size.height + vSpace;
@@ -122,20 +129,24 @@
 
 #pragma mark - public methods
 - (void)startShaking {
-    self.cornerBtn.hidden = NO;
-    self.isShaking = YES;
+    if (self.canEdit) {
+        self.cornerBtn.hidden = NO;
+    }
+    if (self.canShake) {
+        self.isShaking = YES;
+        CAKeyframeAnimation * shakingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+        NSValue * value1 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+        NSValue * value2 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, - DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+        NSValue * value3 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+        shakingAnimation.values = @[value1, value2, value3];
+        shakingAnimation.duration = 0.2;
+        shakingAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+        shakingAnimation.repeatCount = INFINITY;
+        
+        
+        [self.layer addAnimation:shakingAnimation forKey:@"shaking"];
+    }
     
-    CAKeyframeAnimation * shakingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
-    NSValue * value1 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-    NSValue * value2 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, - DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-    NSValue * value3 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-    shakingAnimation.values = @[value1, value2, value3];
-    shakingAnimation.duration = 0.2;
-    shakingAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    shakingAnimation.repeatCount = INFINITY;
-
-    
-    [self.layer addAnimation:shakingAnimation forKey:@"shaking"];
     
 }
 
@@ -143,7 +154,7 @@
     self.isShaking = NO;
     self.cornerBtn.hidden = YES;
     [self.layer removeAllAnimations];
-
+    
 }
 
 #pragma mark - Private methods
@@ -155,6 +166,9 @@
 }
 
 - (void)longPressGestureTriggered:(UILongPressGestureRecognizer *)gesture {
+    if (self.canMove == NO || self.canEdit == NO) {
+        return ;
+    }
     
     switch (gesture.state) {
         case UIGestureRecognizerStateBegan: {
@@ -177,7 +191,7 @@
             self.imageView.layer.masksToBounds = YES;
             self.imageView.layer.shouldRasterize = YES;
             self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
-
+            
         } break;
         case UIGestureRecognizerStateChanged: {
             CGPoint currentPoint = [gesture locationInView:self.superview];
@@ -188,7 +202,7 @@
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedDidMoveWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedDidMoveWithIndexPath:self.indexPath];
             }
-
+            
         } break;
         case UIGestureRecognizerStateEnded: {
             CGPoint endPoint = self.center;
@@ -202,12 +216,12 @@
             self.imageView.layer.masksToBounds = YES;
             self.imageView.layer.shouldRasterize = YES;
             self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
-
+            
             
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];
             }
-
+            
         } break;
             
         default:

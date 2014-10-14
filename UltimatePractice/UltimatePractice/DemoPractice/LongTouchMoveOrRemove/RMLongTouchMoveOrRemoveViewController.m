@@ -70,6 +70,27 @@
     return CGSizeMake(25.0 * self.scaleFactor, 25.0 * self.scaleFactor);
 }
 
+- (BOOL)draggableView:(RMDraggableView *)draggableView canEditingAtIndex:(NSUInteger)index {
+    if (index == 5) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)draggableView:(RMDraggableView *)draggableView canMoveAtIndex:(NSUInteger)index {
+    if (index == 6) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)draggableView:(RMDraggableView *)draggableView canShakeWhenEditingAtIndex:(NSUInteger)index {
+    if (index == 7) {
+        return NO;
+    }
+    return YES;
+}
+
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     RMDraggableViewCell * cell = [[RMDraggableViewCell alloc] initWithStyle:RMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:RMDraggableViewCellCornerBtnStyleTopRight];
     NSString * imgName = [NSString stringWithFormat:@"%ld.jpg", (long)index + 1];

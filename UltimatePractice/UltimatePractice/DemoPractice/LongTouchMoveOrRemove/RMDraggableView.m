@@ -113,12 +113,30 @@
     }
     [self.muArrCells removeAllObjects];
     
+    //Target Item can be reordered
+    BOOL targetCanReorder = YES;
+    BOOL canEdit = YES;
+    BOOL canShakeWhenEditing = YES;
     //Create cells and get draggable view's max frame
     NSInteger numberOfItems = [self numberOfItems];
     for (int index = 0; index < numberOfItems; index ++) {
         RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForIndex:index];
         cell.delegate = self;
         cell.indexPath = [self indexPathFromIndex:index];
+        
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
+            targetCanReorder = [self.dataSource draggableView:self canMoveAtIndex:index];
+        }
+        if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:canEditingAtIndex:)]) {
+            canEdit = [self.delegate draggableView:self canEditingAtIndex:index];
+        }
+        if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:canShakeWhenEditingAtIndex:)]) {
+            canShakeWhenEditing = [self.delegate draggableView:self canShakeWhenEditingAtIndex:index];
+        }
+        
+        cell.canMove = targetCanReorder;
+        cell.canEdit = canEdit;
+        cell.canShake = canShakeWhenEditing;
         [self addSubview:cell];
         [self.muArrCells addObject:cell];
     }
@@ -260,13 +278,17 @@
         
         BOOL isXContain = NO;
         BOOL isYContain = NO;
+        BOOL targetCanReorder = YES;
         if (enumeratedCellFrame.origin.x < draggingCellEndX && enumeratedCellFrame.origin.x + enumeratedCellFrame.size.width > draggingCellEndX) {
             isXContain = YES;
         }
         if (enumeratedCellFrame.origin.y < draggingCellEndY && enumeratedCellFrame.origin.y + enumeratedCellFrame.size.height > draggingCellEndY) {
             isYContain = YES;
         }
-        if (isXContain && isYContain) {
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
+            targetCanReorder = [self.dataSource draggableView:self canMoveAtIndex:i];
+        }
+        if (isXContain && isYContain && targetCanReorder) {
             //Insert dragging cell into this index
             [self.muArrCells removeObject:cell];
             [self.muArrCells insertObject:cell atIndex:i];

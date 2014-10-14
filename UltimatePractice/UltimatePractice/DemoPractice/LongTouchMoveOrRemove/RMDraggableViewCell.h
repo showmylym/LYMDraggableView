@@ -59,6 +59,9 @@ typedef enum {
 //Flag to control logic
 @property (nonatomic) BOOL isEditing;
 @property (nonatomic) BOOL isShaking;
+@property (nonatomic) BOOL canMove;
+@property (nonatomic) BOOL canShake;
+@property (nonatomic) BOOL canEdit;
 
 - (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
 

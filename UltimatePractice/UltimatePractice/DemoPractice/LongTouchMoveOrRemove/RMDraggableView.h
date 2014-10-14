@@ -17,7 +17,7 @@ typedef enum {
     /**
      *  Keep cell size consistent, auto-adapt the space between columns. If there is enough space, then put into current row one more cell.
      */
-//    RMDraggableViewLayoutByCellSize = 0,
+    //    RMDraggableViewLayoutByCellSize = 0,
     /**
      *  Keep the number of columns consistent, auto-adapt the size of cell and the space between items as the same scale-factor.
      */
@@ -37,6 +37,7 @@ typedef enum {
 - (RMDraggableViewCell *)draggableView:(RMDraggableView *)draggableView cellForIndex:(NSUInteger)index;
 
 @optional
+- (BOOL)draggableView:(RMDraggableView *)draggableView canMoveAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView moveItemFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
@@ -52,7 +53,8 @@ typedef enum {
 
 @optional
 
-- (BOOL)canShakeWhenEditing;
+- (BOOL)draggableView:(RMDraggableView *)draggableView canShakeWhenEditingAtIndex:(NSUInteger)index;
+- (BOOL)draggableView:(RMDraggableView *)draggableView canEditingAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index;
