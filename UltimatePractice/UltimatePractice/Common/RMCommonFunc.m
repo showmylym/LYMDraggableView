@@ -8,6 +8,7 @@
 
 #import "RMCommonFunc.h"
 
+
 @implementation RMCommonFunc
 
 + (RMCommonFunc *)SharedInstance {
@@ -25,8 +26,12 @@
     RMDynamicClassMod * touchMoveOrRemoveClassMod = [RMDynamicClassMod new];
     touchMoveOrRemoveClassMod.classKey = kLongTouchMoveOrRemoveClass;
     [muarray addObject:touchMoveOrRemoveClassMod];
-    
+
     return [[NSArray alloc] initWithArray:muarray copyItems:YES];
+}
+
+- (double)systemVersionValue {
+    return [[[UIDevice currentDevice] systemVersion] doubleValue];
 }
 
 @end

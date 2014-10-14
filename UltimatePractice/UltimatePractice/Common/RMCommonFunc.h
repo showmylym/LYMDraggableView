@@ -9,6 +9,7 @@
 #define kLongTouchMoveOrRemoveClass @"LongTouchMoveOrRemoveClass"
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "RMDynamicClassMod.h"
 
 @interface RMCommonFunc : NSObject
@@ -22,4 +23,5 @@
  */
 - (NSArray *)allDynamicClasses;
 
+- (doubleValue)systemVersionValue;
 @end

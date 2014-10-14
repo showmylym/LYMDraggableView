@@ -38,7 +38,7 @@ typedef enum {
 
 @optional
 - (BOOL)draggableView:(RMDraggableView *)draggableView canMoveAtIndex:(NSUInteger)index;
-- (void)draggableView:(RMDraggableView *)draggableView moveItemFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void)draggableView:(RMDraggableView *)draggableView moveItemAndTouchUpFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
 
@@ -61,6 +61,8 @@ typedef enum {
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
 - (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index;
+- (void)draggableViewBeginEditing;
+- (void)draggableViewEndEditing;
 
 @end
 
@@ -69,12 +71,13 @@ typedef enum {
 
 @interface RMDraggableView : UIView
 
-@property (nonatomic, assign) id<RMDraggableViewDelegate> delegate;
-@property (nonatomic, assign) id<RMDraggableViewDataSource> dataSource;
+@property (nonatomic, weak) id<RMDraggableViewDelegate> delegate;
+@property (nonatomic, weak) id<RMDraggableViewDataSource> dataSource;
 
 @property (nonatomic, assign) CGFloat hMargin;
 @property (nonatomic, assign) CGFloat vMargin;
 @property (nonatomic, assign) RMDraggableViewLayout draggableViewLayout;
+@property (nonatomic, assign) BOOL isEditing;
 
 /**
  *  Initialize draggable view.
@@ -94,6 +97,7 @@ typedef enum {
 - (void)startEditing;
 - (void)endEditing;
 - (void)reloadData;
+- (void)removeCellAtIndex:(NSUInteger)index;
 
 - (NSUInteger)numberOfItems;
 

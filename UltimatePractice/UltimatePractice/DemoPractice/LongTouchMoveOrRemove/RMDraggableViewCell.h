@@ -42,7 +42,7 @@ typedef enum {
 
 @interface RMDraggableViewCell : UIView
 
-@property (nonatomic, assign) id<RMDraggableViewCellDelegate> delegate;
+@property (nonatomic, weak) id<RMDraggableViewCellDelegate> delegate;
 @property (nonatomic) RMDraggableViewCellCornerBtnStyle cornerBtnStyle;
 @property (nonatomic, retain) UIView * contentView;
 

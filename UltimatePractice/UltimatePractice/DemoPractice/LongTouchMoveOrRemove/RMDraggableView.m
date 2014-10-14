@@ -44,6 +44,7 @@
         self.vSpace = vSpace;
         self.maxColumn = maxColumn;
         self.muArrCells = [NSMutableArray arrayWithCapacity:20];
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -107,12 +108,11 @@
 }
 
 - (void)reloadData {
+    [self.muArrCells removeAllObjects];
     //Remove all subviews
     for (UIView * subView in self.subviews) {
         [subView removeFromSuperview];
     }
-    [self.muArrCells removeAllObjects];
-    
     //Target Item can be reordered
     BOOL targetCanReorder = YES;
     BOOL canEdit = YES;
@@ -142,18 +142,19 @@
     }
     //construct new frame
     CGRect draggableViewNewFrame = [self resetLayout];
-    [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
     
     //perform call back
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:willResizeWithFrame:)]) {
         [self.delegate draggableView:self willResizeWithFrame:draggableViewNewFrame];
     }
     self.frame = draggableViewNewFrame;
+    [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
         });
     }
+    
 }
 
 /**
@@ -225,13 +226,24 @@
 }
 
 - (void)startEditing {
+    self.isEditing = YES;
     [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
-    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewBeginEditing)]) {
+        [self.delegate draggableViewBeginEditing];
+    }
 }
 
 - (void)endEditing {
+    self.isEditing = NO;
     [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
-    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewEndEditing)]) {
+        [self.delegate draggableViewEndEditing];
+    }
+}
+
+- (void)removeCellAtIndex:(NSUInteger)index {
+    [self.muArrCells removeObjectAtIndex:index];
+    [self resetLayout];
 }
 
 #pragma mark - RMDraggableViewCell Delegate
@@ -258,7 +270,7 @@
     if (self.originalIndexPath == nil) {
         self.originalIndexPath = [indexPath copy];
     }
-    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+    [self startEditing];
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
@@ -310,10 +322,10 @@
     [UIView animateWithDuration:0.4 animations:^{
         [self resetLayout];
     } completion:^(BOOL finished) {
-        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:moveItemFromIndex:toIndex:)]) {
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:moveItemAndTouchUpFromIndex:toIndex:)]) {
             CGFloat fromIndex = [self indexFromIndexPath:self.originalIndexPath];
             CGFloat toIndex = [self indexFromIndexPath:indexPath];
-            [self.dataSource draggableView:self moveItemFromIndex:fromIndex toIndex:toIndex];
+            [self.dataSource draggableView:self moveItemAndTouchUpFromIndex:fromIndex toIndex:toIndex];
         }
         self.originalIndexPath = nil;
     }];

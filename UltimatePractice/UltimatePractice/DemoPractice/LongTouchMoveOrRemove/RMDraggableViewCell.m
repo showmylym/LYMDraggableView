@@ -45,20 +45,30 @@
         self.isEditing = NO;
         self.isShaking = NO;
         
+        self.frame = CGRectMake(0.0, 0.0, 1.0, 1.0);
+        
         //cell content view
-        self.contentView = [[UIView alloc] init];
+        self.contentView = [[UIView alloc] initWithFrame:self.frame];
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:self.contentView];
         
         //control in content view
-        self.imageView = [[UIImageView alloc] init];
+        self.imageView = [[UIImageView alloc] initWithFrame:self.contentView.frame];
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:self.imageView];
         
-        self.textLabel = [[UILabel alloc] init];
+        self.textLabel = [[UILabel alloc] initWithFrame:self.frame];
         self.textLabel.text = @"test";
-        self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
-        self.textLabel.lineBreakMode = UILineBreakModeClip;
+        self.textLabel.font = [UIFont systemFontOfSize:12.0];
+        self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        self.textLabel.textColor = [UIColor colorWithRed:166.0/255.0 green:166.0/255.0 blue:166.0/255.0 alpha:1.0];
+        if ([PublicFunc getSystemVersionValue] < 6.0) {
+            self.textLabel.textAlignment = UITextAlignmentCenter;
+            self.textLabel.lineBreakMode = UILineBreakModeClip;
+        } else {
+            self.textLabel.textAlignment = NSTextAlignmentCenter;
+            self.textLabel.lineBreakMode = NSLineBreakByClipping;
+        }
         [self.contentView addSubview:self.textLabel];
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -92,11 +102,10 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-    NSLog(@"%@ drawRect, view frame:%@", NSStringFromClass([self class]), NSStringFromCGRect(self.frame));
     self.contentView.frame = rect;
     
     CGFloat textLabelHeight = 18.0;
-    CGFloat margin = 4.0;
+    CGFloat margin = 0.0;
     CGFloat vSpace = 4.0;
     
     CGRect imageViewRect = rect;
@@ -111,11 +120,12 @@
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
     
     
-    CGRect labelRect = imageViewRect;
-    labelRect.origin.y = imageViewRect.origin.y + imageViewRect.size.height + vSpace;
+    CGRect labelRect = rect;
+    labelRect.origin.y = rect.size.height - textLabelHeight;
     labelRect.size.height = textLabelHeight;
+    labelRect.size.width = self.imageView.frame.size.width;
     self.textLabel.frame = labelRect;
-    
+    NSLog(@"leiym -- drawrect text label :%@", self.textLabel);
     
     CGRect cornerBtnFrame;
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
@@ -159,7 +169,6 @@
 
 #pragma mark - Private methods
 - (void)tapGestureTriggered:(UITapGestureRecognizer *)gesture {
-    NSLog(@"tap row(%ld) column(%ld) cell once",  (long)self.indexPath.row, (long)self.indexPath.column);
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:tappedWithIndexPath:)]) {
         [self.delegate draggableViewCell:self tappedWithIndexPath:self.indexPath];
     }
