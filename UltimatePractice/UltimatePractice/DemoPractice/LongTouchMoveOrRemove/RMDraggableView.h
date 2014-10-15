@@ -94,7 +94,7 @@ typedef enum {
 
 - (void)resizeWithFrame:(CGRect)frame;
 
-- (void)startEditing;
+- (void)continueShakingWhenEditing;
 - (void)endEditing;
 - (void)reloadData;
 - (void)removeCellAtIndex:(NSUInteger)index;

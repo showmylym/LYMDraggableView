@@ -44,9 +44,9 @@ typedef enum {
 
 @property (nonatomic, weak) id<RMDraggableViewCellDelegate> delegate;
 @property (nonatomic) RMDraggableViewCellCornerBtnStyle cornerBtnStyle;
-@property (nonatomic, retain) UIView * contentView;
 
 //Controls in content view
+@property (nonatomic, retain, readonly) UIView * contentView;
 @property (nonatomic, retain, readonly) UIImageView * imageView;
 @property (nonatomic, retain, readonly) UILabel * textLabel;
 @property (nonatomic, retain, readonly) UIButton * cornerBtn;

@@ -113,6 +113,8 @@
     for (UIView * subView in self.subviews) {
         [subView removeFromSuperview];
     }
+    [self endShaking];
+    
     //Target Item can be reordered
     BOOL targetCanReorder = YES;
     BOOL canEdit = YES;
@@ -150,11 +152,13 @@
     self.frame = draggableViewNewFrame;
     [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
+            if (self.isEditing) {
+                [self continueShakingWhenEditing];
+            }
         });
     }
-    
 }
 
 /**
@@ -214,8 +218,9 @@
             //add up coordinates
             x += cellSize.width + hSpace;
         }
+        y += cellSize.height;
         if (row != numberOfColumns - 1) {
-            y += cellSize.height + self.vSpace;
+            y += self.vSpace;
         }
     }
     draggableViewHeight = y + self.vMargin;
@@ -233,12 +238,20 @@
     }
 }
 
+- (void)continueShakingWhenEditing {
+    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+}
+
 - (void)endEditing {
     self.isEditing = NO;
     [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewEndEditing)]) {
         [self.delegate draggableViewEndEditing];
     }
+}
+
+- (void)endShaking {
+    [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
 }
 
 - (void)removeCellAtIndex:(NSUInteger)index {

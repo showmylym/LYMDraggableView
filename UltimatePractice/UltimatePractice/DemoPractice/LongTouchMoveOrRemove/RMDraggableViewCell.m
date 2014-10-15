@@ -22,6 +22,7 @@
 @property (nonatomic, retain) UILongPressGestureRecognizer * longPressGesture;
 
 //Controls in content view
+@property (nonatomic, retain, readwrite) UIView * contentView;
 @property (nonatomic, retain, readwrite) UIImageView * imageView;
 @property (nonatomic, retain, readwrite) UILabel * textLabel;
 @property (nonatomic, retain, readwrite) UIButton * cornerBtn;
@@ -57,7 +58,13 @@
         self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:self.imageView];
         
-        self.textLabel = [[UILabel alloc] initWithFrame:self.frame];
+        CGFloat textLabelHeight = 18.0;
+        CGRect labelRect = self.frame;
+        labelRect.origin.y = self.frame.size.height - textLabelHeight;
+        labelRect.size.height = textLabelHeight;
+        labelRect.size.width = self.frame.size.width;
+        
+        self.textLabel = [[UILabel alloc] initWithFrame:labelRect];
         self.textLabel.text = @"test";
         self.textLabel.font = [UIFont systemFontOfSize:12.0];
         self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -104,7 +111,6 @@
     // Drawing code
     self.contentView.frame = rect;
     
-    CGFloat textLabelHeight = 18.0;
     CGFloat margin = 0.0;
     CGFloat vSpace = 4.0;
     
@@ -118,14 +124,6 @@
     self.imageView.layer.masksToBounds = YES;
     self.imageView.layer.shouldRasterize = YES;
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
-    
-    
-    CGRect labelRect = rect;
-    labelRect.origin.y = rect.size.height - textLabelHeight;
-    labelRect.size.height = textLabelHeight;
-    labelRect.size.width = self.imageView.frame.size.width;
-    self.textLabel.frame = labelRect;
-    NSLog(@"leiym -- drawrect text label :%@", self.textLabel);
     
     CGRect cornerBtnFrame;
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
