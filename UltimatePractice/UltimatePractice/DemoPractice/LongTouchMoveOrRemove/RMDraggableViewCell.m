@@ -8,6 +8,7 @@
 
 #import "RMDraggableViewCell.h"
 #import "RMDraggableView.h"
+#import "RMCommonFunc.h"
 
 
 #define ZoomFactor_Based320Width      1.5
@@ -69,7 +70,7 @@
         self.textLabel.font = [UIFont systemFontOfSize:12.0];
         self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         self.textLabel.textColor = [UIColor colorWithRed:166.0/255.0 green:166.0/255.0 blue:166.0/255.0 alpha:1.0];
-        if ([PublicFunc getSystemVersionValue] < 6.0) {
+        if ([[RMCommonFunc SharedInstance] systemVersionValue] < 6.0) {
             self.textLabel.textAlignment = UITextAlignmentCenter;
             self.textLabel.lineBreakMode = UILineBreakModeClip;
         } else {

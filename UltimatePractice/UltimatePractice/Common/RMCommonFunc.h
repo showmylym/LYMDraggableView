@@ -23,5 +23,5 @@
  */
 - (NSArray *)allDynamicClasses;
 
-- (doubleValue)systemVersionValue;
+- (double)systemVersionValue;
 @end
