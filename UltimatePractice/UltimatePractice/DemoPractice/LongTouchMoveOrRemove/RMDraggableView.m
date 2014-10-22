@@ -154,9 +154,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
-            if (self.isEditing) {
-                [self continueShakingWhenEditing];
-            }
         });
     }
 }
@@ -239,7 +236,9 @@
 }
 
 - (void)continueShakingWhenEditing {
-    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+    if (self.isEditing) {
+        [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+    }
 }
 
 - (void)endEditing {
@@ -342,6 +341,14 @@
         }
         self.originalIndexPath = nil;
     }];
+}
+
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleFactor:(RMIndexPath *)indexPath {
+    CGFloat factor = 1.0;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cellEditingScaleFactor:)]) {
+        factor = [self.delegate draggableView:self cellEditingScaleFactor:[self indexFromIndexPath:indexPath]];
+    }
+    return factor;
 }
 
 @end

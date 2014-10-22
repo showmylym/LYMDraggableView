@@ -34,7 +34,7 @@ typedef enum {
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath;
-
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleFactor:(RMIndexPath *)indexPath;
 @end
 
 

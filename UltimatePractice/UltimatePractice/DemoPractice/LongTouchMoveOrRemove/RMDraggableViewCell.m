@@ -11,9 +11,6 @@
 #import "RMCommonFunc.h"
 
 
-#define ZoomFactor_Based320Width      1.5
-
-
 
 @interface RMDraggableViewCell ()
 
@@ -29,7 +26,7 @@
 @property (nonatomic, retain, readwrite) UIButton * cornerBtn;
 
 //Store data
-@property (nonatomic, assign) CGFloat editingZoomFactor;
+@property (nonatomic, assign) CGFloat screenZoomingFactor;
 @property (nonatomic, assign) CGPoint beginningPoint;
 @property (nonatomic, assign) CGPoint beginningCenter;
 
@@ -47,7 +44,7 @@
         self.isEditing = NO;
         self.isShaking = NO;
         
-        self.frame = CGRectMake(0.0, 0.0, 1.0, 1.0);
+        self.frame = CGRectMake(0.0, 0.0, 50.0, 80.0);
         
         //cell content view
         self.contentView = [[UIView alloc] initWithFrame:self.frame];
@@ -56,19 +53,10 @@
         
         //control in content view
         self.imageView = [[UIImageView alloc] initWithFrame:self.contentView.frame];
-        self.imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self.contentView addSubview:self.imageView];
         
-        CGFloat textLabelHeight = 18.0;
-        CGRect labelRect = self.frame;
-        labelRect.origin.y = self.frame.size.height - textLabelHeight;
-        labelRect.size.height = textLabelHeight;
-        labelRect.size.width = self.frame.size.width;
-        
-        self.textLabel = [[UILabel alloc] initWithFrame:labelRect];
-        self.textLabel.text = @"test";
+        self.textLabel = [[UILabel alloc] initWithFrame:self.contentView.frame];
         self.textLabel.font = [UIFont systemFontOfSize:12.0];
-        self.textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         self.textLabel.textColor = [UIColor colorWithRed:166.0/255.0 green:166.0/255.0 blue:166.0/255.0 alpha:1.0];
         if ([[RMCommonFunc SharedInstance] systemVersionValue] < 6.0) {
             self.textLabel.textAlignment = UITextAlignmentCenter;
@@ -81,7 +69,6 @@
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
-        self.cornerBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
         [self.cornerBtn setBackgroundImage:[UIImage imageNamed:@"dragviewcellcornerdel@3x"] forState:UIControlStateNormal];
         self.cornerBtn.hidden = YES;
         [self.contentView addSubview:self.cornerBtn];
@@ -99,8 +86,7 @@
         //data
         //cal scaled space, to adapt screen after iPhone 6
         CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-        CGFloat scaleFactor = screenSize.width / 320.0;
-        self.editingZoomFactor = ZoomFactor_Based320Width * scaleFactor;
+        self.screenZoomingFactor = screenSize.width / 320.0;
     }
     return self;
 }
@@ -110,8 +96,43 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-    self.contentView.frame = rect;
+    [self changeControlsFrameWithNewCellFrame:self.frame];
+}
+
+
+#pragma mark - public methods
+- (void)startShaking {
+    if (self.canEdit) {
+        self.cornerBtn.hidden = NO;
+    }
+    if (self.canShake) {
+        [self.layer removeAllAnimations];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            CAKeyframeAnimation * shakingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+            NSValue * value1 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+            NSValue * value2 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, - DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+            NSValue * value3 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
+            shakingAnimation.values = @[value1, value2, value3];
+            shakingAnimation.duration = 0.2;
+            shakingAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+            shakingAnimation.repeatCount = INFINITY;
+            [self.layer addAnimation:shakingAnimation forKey:@"shaking"];
+            self.isShaking = YES;
+        });
+    }
     
+    
+}
+
+- (void)endShaking {
+    self.isShaking = NO;
+    self.cornerBtn.hidden = YES;
+    [self.layer removeAllAnimations];
+    
+}
+
+#pragma mark - Private methods
+- (void)changeControlsFrameWithNewCellFrame:(CGRect)rect {
     CGFloat margin = 0.0;
     CGFloat vSpace = 4.0;
     
@@ -126,47 +147,21 @@
     self.imageView.layer.shouldRasterize = YES;
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
     
+    CGRect labelFrame = imageViewRect;
+    labelFrame.origin.y += imageViewRect.origin.y + imageViewRect.size.height + vSpace;
+    labelFrame.size.height = 18.0;
+    self.textLabel.frame = labelFrame;
+    
     CGRect cornerBtnFrame;
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
         cornerBtnFrame.size = [self.delegate draggableViewCell:self cornerBtnSizeWithIndexPath:self.indexPath];
     }
-    cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
+    cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width * 2.0 / 3.0;
     cornerBtnFrame.origin.y = 0.0;
     self.cornerBtn.frame = cornerBtnFrame;
-}
-
-
-#pragma mark - public methods
-- (void)startShaking {
-    if (self.canEdit) {
-        self.cornerBtn.hidden = NO;
-    }
-    if (self.canShake) {
-        self.isShaking = YES;
-        CAKeyframeAnimation * shakingAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
-        NSValue * value1 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-        NSValue * value2 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, - DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-        NSValue * value3 = [NSValue valueWithCATransform3D:CATransform3DRotate(self.layer.transform, DegreesToRadians(3.0), 0.0, 0.0, 1.0)];
-        shakingAnimation.values = @[value1, value2, value3];
-        shakingAnimation.duration = 0.2;
-        shakingAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-        shakingAnimation.repeatCount = INFINITY;
-        
-        
-        [self.layer addAnimation:shakingAnimation forKey:@"shaking"];
-    }
-    
     
 }
 
-- (void)endShaking {
-    self.isShaking = NO;
-    self.cornerBtn.hidden = YES;
-    [self.layer removeAllAnimations];
-    
-}
-
-#pragma mark - Private methods
 - (void)tapGestureTriggered:(UITapGestureRecognizer *)gesture {
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:tappedWithIndexPath:)]) {
         [self.delegate draggableViewCell:self tappedWithIndexPath:self.indexPath];
@@ -176,6 +171,10 @@
 - (void)longPressGestureTriggered:(UILongPressGestureRecognizer *)gesture {
     if (self.canMove == NO || self.canEdit == NO) {
         return ;
+    }
+    CGFloat cellEditingScaleFactor = 1.0;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cellEditingScaleFactor:)]) {
+        cellEditingScaleFactor = [self.delegate draggableViewCell:self cellEditingScaleFactor:self.indexPath];
     }
     
     switch (gesture.state) {
@@ -190,15 +189,11 @@
             //scale up and reset center
             CGPoint center = self.center;
             CGRect scaleUpRect = self.frame;
-            scaleUpRect.size.width *= self.editingZoomFactor;
-            scaleUpRect.size.height *= self.editingZoomFactor;
+            scaleUpRect.size.width *= cellEditingScaleFactor * self.screenZoomingFactor;
+            scaleUpRect.size.height *= cellEditingScaleFactor * self.screenZoomingFactor;
             self.frame = scaleUpRect;
             self.center = center;
-            
-            self.imageView.layer.cornerRadius = 0.0;
-            self.imageView.layer.masksToBounds = YES;
-            self.imageView.layer.shouldRasterize = YES;
-            self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
+            [self changeControlsFrameWithNewCellFrame:self.frame];
             
         } break;
         case UIGestureRecognizerStateChanged: {
@@ -215,16 +210,11 @@
         case UIGestureRecognizerStateEnded: {
             CGPoint endPoint = self.center;
             CGRect scaleDownRect = self.frame;
-            scaleDownRect.size.width /= self.editingZoomFactor;
-            scaleDownRect.size.height /= self.editingZoomFactor;
+            scaleDownRect.size.width /= cellEditingScaleFactor * self.screenZoomingFactor;
+            scaleDownRect.size.height /= cellEditingScaleFactor * self.screenZoomingFactor;
             self.frame = scaleDownRect;
             self.center = endPoint;
-            
-            self.imageView.layer.cornerRadius = self.imageView.frame.size.width / 2.0;
-            self.imageView.layer.masksToBounds = YES;
-            self.imageView.layer.shouldRasterize = YES;
-            self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
-            
+            [self changeControlsFrameWithNewCellFrame:self.frame];
             
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];

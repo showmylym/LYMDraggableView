@@ -61,6 +61,8 @@ typedef enum {
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
 - (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index;
+- (CGFloat)draggableView:(RMDraggableView *)draggableView cellEditingScaleFactor:(NSUInteger)index;
+
 - (void)draggableViewBeginEditing;
 - (void)draggableViewEndEditing;
 
