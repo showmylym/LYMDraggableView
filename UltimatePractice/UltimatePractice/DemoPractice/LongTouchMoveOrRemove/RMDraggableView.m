@@ -282,7 +282,9 @@
     if (self.originalIndexPath == nil) {
         self.originalIndexPath = [indexPath copy];
     }
-    [self startEditing];
+    if (self.isEditing == NO) {
+        [self startEditing];
+    }
 }
 
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {

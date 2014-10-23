@@ -63,7 +63,7 @@ typedef enum {
 @property (nonatomic) BOOL canShake;
 @property (nonatomic) BOOL canEdit;
 
-- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
+- (instancetype)initWithSize:(CGSize)size style:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
 
 - (void)startShaking;
 - (void)endShaking;

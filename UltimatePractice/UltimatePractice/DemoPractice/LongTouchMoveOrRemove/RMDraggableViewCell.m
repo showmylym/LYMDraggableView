@@ -10,7 +10,8 @@
 #import "RMDraggableView.h"
 #import "RMCommonFunc.h"
 
-
+#define VSpace (4.0)
+#define LabelHeight (18.0)
 
 @interface RMDraggableViewCell ()
 
@@ -34,8 +35,9 @@
 
 @implementation RMDraggableViewCell
 
-- (instancetype)initWithStyle:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
-    self = [super init];
+- (instancetype)initWithSize:(CGSize)size style:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
+    
+    self = [super initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         self.canEdit = YES;
@@ -44,20 +46,17 @@
         self.isEditing = NO;
         self.isShaking = NO;
         
-        self.frame = CGRectMake(0.0, 0.0, 50.0, 80.0);
-        
         //cell content view
         self.contentView = [[UIView alloc] initWithFrame:self.frame];
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:self.contentView];
         
-        //control in content view
-        self.imageView = [[UIImageView alloc] initWithFrame:self.contentView.frame];
+        //circle image view
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.width)];
         [self.contentView addSubview:self.imageView];
         
-        self.textLabel = [[UILabel alloc] initWithFrame:self.contentView.frame];
+        self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
         self.textLabel.font = [UIFont systemFontOfSize:12.0];
-        self.textLabel.textColor = [UIColor colorWithRed:166.0/255.0 green:166.0/255.0 blue:166.0/255.0 alpha:1.0];
         if ([[RMCommonFunc SharedInstance] systemVersionValue] < 6.0) {
             self.textLabel.textAlignment = UITextAlignmentCenter;
             self.textLabel.lineBreakMode = UILineBreakModeClip;
@@ -134,12 +133,11 @@
 #pragma mark - Private methods
 - (void)changeControlsFrameWithNewCellFrame:(CGRect)rect {
     CGFloat margin = 0.0;
-    CGFloat vSpace = 4.0;
     
-    CGRect imageViewRect = rect;
+    CGRect imageViewRect;
     imageViewRect.origin.x = margin;
     imageViewRect.origin.y = margin;
-    imageViewRect.size.width  -= margin * 2;
+    imageViewRect.size.width = rect.size.width - margin * 2;
     imageViewRect.size.height = imageViewRect.size.width;
     self.imageView.frame = imageViewRect;
     self.imageView.layer.cornerRadius = self.imageView.frame.size.width / 2.0;
@@ -148,8 +146,8 @@
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
     
     CGRect labelFrame = imageViewRect;
-    labelFrame.origin.y += imageViewRect.origin.y + imageViewRect.size.height + vSpace;
-    labelFrame.size.height = 18.0;
+    labelFrame.origin.y += imageViewRect.origin.y + imageViewRect.size.height + VSpace;
+    labelFrame.size.height = LabelHeight;
     self.textLabel.frame = labelFrame;
     
     CGRect cornerBtnFrame;
