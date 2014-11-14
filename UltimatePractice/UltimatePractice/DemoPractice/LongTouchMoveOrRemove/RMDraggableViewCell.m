@@ -57,7 +57,8 @@
         if (cellType == RMDraggableViewCellTypeDefault) {
             self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
             self.textLabel.font = [UIFont systemFontOfSize:12.0];
-            if ([PublicFunc getSystemVersionValue] < 6.0) {
+            float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+            if (version < 6.0) {
                 self.textLabel.textAlignment = UITextAlignmentCenter;
                 self.textLabel.lineBreakMode = UILineBreakModeClip;
             } else {
