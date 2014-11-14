@@ -13,8 +13,8 @@
 @interface RMDraggableView ()
 <RMDraggableViewCellDelegate>
 
-@property (nonatomic, assign) CGFloat vSpace;
 @property (nonatomic, assign) NSUInteger maxColumn;
+@property (nonatomic, assign) BOOL isEditing;
 
 @property (nonatomic, retain) NSMutableArray * muArrCells;
 @property (nonatomic, retain) RMIndexPath * destinedIndexPath;
@@ -25,7 +25,7 @@
 
 @implementation RMDraggableView
 
-- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn {
+- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn cornerRadius:(NSNumber *)cornerRadiusValue {
     self = [super init];
     if (self) {
         if (frame.size.height != 0.0) {
@@ -43,6 +43,7 @@
         }
         self.vSpace = vSpace;
         self.maxColumn = maxColumn;
+        self.cellImageCornerRadius = cornerRadiusValue;
         self.muArrCells = [NSMutableArray arrayWithCapacity:20];
         self.clipsToBounds = YES;
     }
@@ -64,7 +65,7 @@
 }
 
 
-#pragma mark - property override
+#pragma mark - property override 
 
 
 
@@ -92,6 +93,84 @@
         cell.indexPath.column = indexPath.column;
     }
 }
+
+/**
+ *  Return draggable view new frame. Set all cells frame.
+ *
+ *  @return
+ */
+- (CGRect)resetLayout {
+    NSUInteger numberOfItems = [self numberOfItems];
+    
+    CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
+    CGFloat viewWidth = self.frame.size.width;
+    CGFloat hSpace = 0.0;
+    CGFloat hMargin = 0.0;
+    if (self.hMargin == MarginAutoCaled) {
+        hMargin = (viewWidth - (cellSize.width * self.maxColumn)) / (self.maxColumn + 1);
+        hSpace = hMargin;
+    } else {
+        hMargin = self.hMargin;
+        hSpace = (viewWidth - (cellSize.width * self.maxColumn) - hMargin * 2) / (self.maxColumn - 1);
+    }
+    
+    CGFloat vMargin = self.vMargin;
+    
+    //x and y is to specify coordinate of draggableViewCell
+    CGFloat x = hMargin;
+    CGFloat y = vMargin;
+    
+    CGFloat draggableViewHeight = 0.0;
+    //Create cells and get draggable view's max frame
+    NSInteger numberOfRows = numberOfItems / self.maxColumn;
+    if (numberOfItems % self.maxColumn > 0) {
+        //Treat it as the last line
+        numberOfRows ++;
+    }
+    for (int row = 0; row < numberOfRows; row ++) {
+        x = hMargin;
+        NSUInteger numberOfColumns = numberOfItems - row * self.maxColumn;
+        if (numberOfColumns > self.maxColumn) {
+            //Column number of the line which is not the last line
+            numberOfColumns = self.maxColumn;
+        }
+        
+        for (int column = 0; column < numberOfColumns; column ++) {
+            RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
+            NSUInteger index = [self indexFromIndexPath:indexPath];
+            //Reset frame of cells except the cell dragging.
+            BOOL needChangeLayout = YES;
+            if (self.destinedIndexPath != nil && index == [self indexFromIndexPath:self.destinedIndexPath]) {
+                //The cell is dragging, needn't to reset its frame. It locates where is finger staying.
+                needChangeLayout = NO;
+            }
+            if (index < self.muArrCells.count && needChangeLayout) {
+                RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+                cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
+            }
+            //add up coordinates
+            x += cellSize.width + hSpace;
+        }
+        y += cellSize.height;
+        if (row != numberOfRows - 1) {
+            y += self.vSpace;
+        }
+    }
+    draggableViewHeight = y + self.vMargin;
+    //construct new frame
+    CGRect draggableViewNewFrame = self.frame;
+    draggableViewNewFrame.size.height = draggableViewHeight;
+    return draggableViewNewFrame;
+}
+
+- (void)startEditing {
+    self.isEditing = YES;
+    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewBeginEditing:)]) {
+        [self.delegate draggableViewBeginEditing:self];
+    }
+}
+
 
 #pragma mark - Public methods
 - (NSUInteger)numberOfItems {
@@ -158,83 +237,6 @@
     }
 }
 
-/**
- *  Return draggable view new frame. Set all cells frame.
- *
- *  @return
- */
-- (CGRect)resetLayout {
-    NSUInteger numberOfItems = [self numberOfItems];
-    
-    CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
-    CGFloat viewWidth = self.frame.size.width;
-    CGFloat hSpace = 0.0;
-    CGFloat hMargin = 0.0;
-    if (self.hMargin == MarginAutoCaled) {
-        hMargin = (viewWidth - (cellSize.width * self.maxColumn)) / (self.maxColumn + 1);
-        hSpace = hMargin;
-    } else {
-        hMargin = self.hMargin;
-        hSpace = (viewWidth - (cellSize.width * self.maxColumn) - hMargin * 2) / (self.maxColumn - 1);
-    }
-    
-    CGFloat vMargin = self.vMargin;
-    
-    //x and y is to specify coordinate of draggableViewCell
-    CGFloat x = hMargin;
-    CGFloat y = vMargin;
-    
-    CGFloat draggableViewHeight = 0.0;
-    //Create cells and get draggable view's max frame
-    NSInteger numberOfRows = numberOfItems / self.maxColumn;
-    if (numberOfItems % self.maxColumn > 0) {
-        //Treat it as the last line
-        numberOfRows ++;
-    }
-    for (int row = 0; row < numberOfRows; row ++) {
-        x = hMargin;
-        NSUInteger numberOfColumns = numberOfItems - row * self.maxColumn;
-        if (numberOfColumns > self.maxColumn) {
-            //Column number of the line which is not the last line
-            numberOfColumns = self.maxColumn;
-        }
-        
-        for (int column = 0; column < numberOfColumns; column ++) {
-            RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
-            NSUInteger index = [self indexFromIndexPath:indexPath];
-            //Reset frame of cells except the cell dragging.
-            BOOL needChangeLayout = YES;
-            if (self.destinedIndexPath != nil && index == [self indexFromIndexPath:self.destinedIndexPath]) {
-                //The cell is dragging, needn't to reset its frame. It locates where is finger staying.
-                needChangeLayout = NO;
-            }
-            if (index < self.muArrCells.count && needChangeLayout) {
-                RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
-                cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
-            }
-            //add up coordinates
-            x += cellSize.width + hSpace;
-        }
-        y += cellSize.height;
-        if (row != numberOfColumns - 1) {
-            y += self.vSpace;
-        }
-    }
-    draggableViewHeight = y + self.vMargin;
-    //construct new frame
-    CGRect draggableViewNewFrame = self.frame;
-    draggableViewNewFrame.size.height = draggableViewHeight;
-    return draggableViewNewFrame;
-}
-
-- (void)startEditing {
-    self.isEditing = YES;
-    [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewBeginEditing)]) {
-        [self.delegate draggableViewBeginEditing];
-    }
-}
-
 - (void)continueShakingWhenEditing {
     if (self.isEditing) {
         [self.muArrCells makeObjectsPerformSelector:@selector(startShaking)];
@@ -243,9 +245,9 @@
 
 - (void)endEditing {
     self.isEditing = NO;
-    [self.muArrCells makeObjectsPerformSelector:@selector(endShaking)];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewEndEditing)]) {
-        [self.delegate draggableViewEndEditing];
+    [self endShaking];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewEndEditing:)]) {
+        [self.delegate draggableViewEndEditing:self];
     }
 }
 
@@ -254,8 +256,18 @@
 }
 
 - (void)removeCellAtIndex:(NSUInteger)index {
-    [self.muArrCells removeObjectAtIndex:index];
+    RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+    [cell removeFromSuperview];
+    [self.muArrCells removeObject:cell];
     [self resetLayout];
+}
+
+- (RMDraggableViewCell *)cellAtIndex:(NSUInteger)index {
+    if (index < self.muArrCells.count) {
+        return [self.muArrCells objectAtIndex:index];
+    } else {
+        return nil;
+    }
 }
 
 #pragma mark - RMDraggableViewCell Delegate
@@ -290,7 +302,7 @@
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
     //Store the indexpath value of cell which is dragging.
     self.destinedIndexPath = indexPath;
-    
+
     CGRect draggingCellFrame = cell.frame;
     NSArray * arrCells = [NSArray arrayWithArray:self.muArrCells];
     for (int i = 0; i < arrCells.count; i ++) {
@@ -345,12 +357,21 @@
     }];
 }
 
-- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleFactor:(RMIndexPath *)indexPath {
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleUpFactorWithIndexPath:(RMIndexPath *)indexPath {
     CGFloat factor = 1.0;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cellEditingScaleFactor:)]) {
-        factor = [self.delegate draggableView:self cellEditingScaleFactor:[self indexFromIndexPath:indexPath]];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cellEditingScaleUpFactorAtIndex:)]) {
+        factor = [self.delegate draggableView:self cellEditingScaleUpFactorAtIndex:[self indexFromIndexPath:indexPath]];
     }
     return factor;
 }
+
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellImageCornerRadiusAtIndexPath:(RMIndexPath *)indexPath {
+    CGFloat cornerRadius = cell.imageView.frame.size.width / 2.0;
+    if (self.cellImageCornerRadius != nil) {
+        cornerRadius = [self.cellImageCornerRadius doubleValue];
+    }
+    return cornerRadius;
+}
+
 
 @end

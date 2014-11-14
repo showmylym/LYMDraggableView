@@ -17,7 +17,7 @@ typedef enum {
     /**
      *  Keep cell size consistent, auto-adapt the space between columns. If there is enough space, then put into current row one more cell.
      */
-    //    RMDraggableViewLayoutByCellSize = 0,
+//    RMDraggableViewLayoutByCellSize = 0,
     /**
      *  Keep the number of columns consistent, auto-adapt the size of cell and the space between items as the same scale-factor.
      */
@@ -53,18 +53,25 @@ typedef enum {
 
 @optional
 
+//corner btn callback
+- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index;
+- (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index;
+- (CGPoint)draggableView:(RMDraggableView *)draggableView cornerBtnOffsetAtIndex:(NSUInteger)index;
+
+//appearance callback
 - (BOOL)draggableView:(RMDraggableView *)draggableView canShakeWhenEditingAtIndex:(NSUInteger)index;
 - (BOOL)draggableView:(RMDraggableView *)draggableView canEditingAtIndex:(NSUInteger)index;
+- (CGFloat)draggableView:(RMDraggableView *)draggableView cellEditingScaleUpFactorAtIndex:(NSUInteger)index;
+
+//operation callback
 - (void)draggableView:(RMDraggableView *)draggableView willSelectCellAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView didSelectCellAtIndex:(NSUInteger)index;
-- (void)draggableView:(RMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index;
 - (void)draggableView:(RMDraggableView *)draggableView willResizeWithFrame:(CGRect)frame;
 - (void)draggableView:(RMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame;
-- (CGSize)draggableView:(RMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index;
-- (CGFloat)draggableView:(RMDraggableView *)draggableView cellEditingScaleFactor:(NSUInteger)index;
 
-- (void)draggableViewBeginEditing;
-- (void)draggableViewEndEditing;
+//state callback
+- (void)draggableViewBeginEditing:(RMDraggableView *)draggableView;
+- (void)draggableViewEndEditing:(RMDraggableView *)draggableView;
 
 @end
 
@@ -78,8 +85,14 @@ typedef enum {
 
 @property (nonatomic, assign) CGFloat hMargin;
 @property (nonatomic, assign) CGFloat vMargin;
+@property (nonatomic, assign) CGFloat vSpace;
 @property (nonatomic, assign) RMDraggableViewLayout draggableViewLayout;
-@property (nonatomic, assign) BOOL isEditing;
+/**
+ *  value will be auto-calculated if nil.
+ */
+@property (nonatomic, strong) NSNumber * cellImageCornerRadius;
+
+@property (nonatomic, assign, readonly) BOOL isEditing;
 
 /**
  *  Initialize draggable view.
@@ -90,9 +103,10 @@ typedef enum {
  *  @param vMargin    Margin of Verticality, must set value and can't be MarginAutoCaled.
  *  @param vSpace     Space between Columns
  *  @param maxColumn  accepted max column value.
+ *  @param cornerRadius  cornerRadius of cell image. The value is cellImageWidth/2.0 if set nil.
  *  @return
  */
-- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn;
+- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn cornerRadius:(NSNumber *)cornerRadiusValue;
 
 - (void)resizeWithFrame:(CGRect)frame;
 
@@ -102,6 +116,6 @@ typedef enum {
 - (void)removeCellAtIndex:(NSUInteger)index;
 
 - (NSUInteger)numberOfItems;
-
+- (RMDraggableViewCell *)cellAtIndex:(NSUInteger)index;
 
 @end

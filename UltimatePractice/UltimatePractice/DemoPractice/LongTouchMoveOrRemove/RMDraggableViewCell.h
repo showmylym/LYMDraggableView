@@ -16,7 +16,14 @@
 @class RMIndexPath;
 
 typedef enum {
+    /**
+     *  Show both image and label text.
+     */
     RMDraggableViewCellTypeDefault = 0,
+    /**
+     *  Show image without label text.
+     */
+    RMDraggableViewCellTypeOnlyIcon = 1,
 } RMDraggableViewCellType;
 
 typedef enum {
@@ -28,13 +35,21 @@ typedef enum {
 @protocol RMDraggableViewCellDelegate <NSObject>
 
 @optional
+
+//appearance call back
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleUpFactorWithIndexPath:(RMIndexPath *)indexPath;
+- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellImageCornerRadiusAtIndexPath:(RMIndexPath *)indexPath;
+
 - (void)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(RMIndexPath *)indexPath;
 - (CGSize)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnSizeWithIndexPath:(RMIndexPath *)indexPath;
+
+
+//operation callback
 - (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath;
 - (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath;
-- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleFactor:(RMIndexPath *)indexPath;
+
 @end
 
 

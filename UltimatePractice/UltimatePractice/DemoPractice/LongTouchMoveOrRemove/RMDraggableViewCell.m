@@ -8,7 +8,6 @@
 
 #import "RMDraggableViewCell.h"
 #import "RMDraggableView.h"
-#import "RMCommonFunc.h"
 
 #define VSpace (4.0)
 #define LabelHeight (18.0)
@@ -40,9 +39,9 @@
     self = [super initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        self.canEdit = YES;
-        self.canShake = YES;
-        self.canMove = YES;
+        self.canEdit   = YES;
+        self.canShake  = YES;
+        self.canMove   = YES;
         self.isEditing = NO;
         self.isShaking = NO;
         
@@ -55,20 +54,22 @@
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.width)];
         [self.contentView addSubview:self.imageView];
         
-        self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
-        self.textLabel.font = [UIFont systemFontOfSize:12.0];
-        if ([[RMCommonFunc SharedInstance] systemVersionValue] < 6.0) {
-            self.textLabel.textAlignment = UITextAlignmentCenter;
-            self.textLabel.lineBreakMode = UILineBreakModeClip;
-        } else {
-            self.textLabel.textAlignment = NSTextAlignmentCenter;
-            self.textLabel.lineBreakMode = NSLineBreakByClipping;
+        if (cellType == RMDraggableViewCellTypeDefault) {
+            self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
+            self.textLabel.font = [UIFont systemFontOfSize:12.0];
+            if ([PublicFunc getSystemVersionValue] < 6.0) {
+                self.textLabel.textAlignment = UITextAlignmentCenter;
+                self.textLabel.lineBreakMode = UILineBreakModeClip;
+            } else {
+                self.textLabel.textAlignment = NSTextAlignmentCenter;
+                self.textLabel.lineBreakMode = NSLineBreakByClipping;
+            }
+            [self.contentView addSubview:self.textLabel];
         }
-        [self.contentView addSubview:self.textLabel];
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.cornerBtn setBackgroundImage:[UIImage imageNamed:@"dragviewcellcornerdel@3x"] forState:UIControlStateNormal];
+        [self.cornerBtn setImage:[UIImage imageNamed:@"contactFavIconCorner"] forState:UIControlStateNormal];
         self.cornerBtn.hidden = YES;
         [self.contentView addSubview:self.cornerBtn];
         
@@ -127,20 +128,25 @@
     self.isShaking = NO;
     self.cornerBtn.hidden = YES;
     [self.layer removeAllAnimations];
-    
+
 }
 
 #pragma mark - Private methods
 - (void)changeControlsFrameWithNewCellFrame:(CGRect)rect {
     CGFloat margin = 0.0;
-    
+
     CGRect imageViewRect;
     imageViewRect.origin.x = margin;
     imageViewRect.origin.y = margin;
     imageViewRect.size.width = rect.size.width - margin * 2;
     imageViewRect.size.height = imageViewRect.size.width;
     self.imageView.frame = imageViewRect;
-    self.imageView.layer.cornerRadius = self.imageView.frame.size.width / 2.0;
+    
+    CGFloat cellImageCornerRadius = 0.0;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cellImageCornerRadiusAtIndexPath:)]) {
+        cellImageCornerRadius = [self.delegate draggableViewCell:self cellImageCornerRadiusAtIndexPath:self.indexPath];
+    }
+    self.imageView.layer.cornerRadius = cellImageCornerRadius;
     self.imageView.layer.masksToBounds = YES;
     self.imageView.layer.shouldRasterize = YES;
     self.imageView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
@@ -154,10 +160,14 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
         cornerBtnFrame.size = [self.delegate draggableViewCell:self cornerBtnSizeWithIndexPath:self.indexPath];
     }
-    cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width * 2.0 / 3.0;
+    if (self.cornerBtnStyle == RMDraggableViewCellCornerBtnStyleTopRight) {
+        cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
+    } else {
+        cornerBtnFrame.origin.x = 0.0;
+    }
     cornerBtnFrame.origin.y = 0.0;
     self.cornerBtn.frame = cornerBtnFrame;
-    
+
 }
 
 - (void)tapGestureTriggered:(UITapGestureRecognizer *)gesture {
@@ -171,8 +181,8 @@
         return ;
     }
     CGFloat cellEditingScaleFactor = 1.0;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cellEditingScaleFactor:)]) {
-        cellEditingScaleFactor = [self.delegate draggableViewCell:self cellEditingScaleFactor:self.indexPath];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cellEditingScaleUpFactorWithIndexPath:)]) {
+        cellEditingScaleFactor = [self.delegate draggableViewCell:self cellEditingScaleUpFactorWithIndexPath:self.indexPath];
     }
     
     switch (gesture.state) {
@@ -187,8 +197,8 @@
             //scale up and reset center
             CGPoint center = self.center;
             CGRect scaleUpRect = self.frame;
-            scaleUpRect.size.width *= cellEditingScaleFactor * self.screenZoomingFactor;
-            scaleUpRect.size.height *= cellEditingScaleFactor * self.screenZoomingFactor;
+            scaleUpRect.size.width *= cellEditingScaleFactor;
+            scaleUpRect.size.height *= cellEditingScaleFactor;
             self.frame = scaleUpRect;
             self.center = center;
             [self changeControlsFrameWithNewCellFrame:self.frame];
@@ -203,13 +213,13 @@
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedDidMoveWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedDidMoveWithIndexPath:self.indexPath];
             }
-            
+
         } break;
         case UIGestureRecognizerStateEnded: {
             CGPoint endPoint = self.center;
             CGRect scaleDownRect = self.frame;
-            scaleDownRect.size.width /= cellEditingScaleFactor * self.screenZoomingFactor;
-            scaleDownRect.size.height /= cellEditingScaleFactor * self.screenZoomingFactor;
+            scaleDownRect.size.width /= cellEditingScaleFactor;
+            scaleDownRect.size.height /= cellEditingScaleFactor;
             self.frame = scaleDownRect;
             self.center = endPoint;
             [self changeControlsFrameWithNewCellFrame:self.frame];
@@ -217,7 +227,7 @@
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];
             }
-            
+
         } break;
             
         default:
