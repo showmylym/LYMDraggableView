@@ -2,18 +2,18 @@
 //  RMIndexPath.m
 //  UltimatePractice
 //
-//  Created by Jerry Ray on 10/13/14.
-//  Copyright (c) 2014 RayManning. All rights reserved.
+//  Created by Lei Yiming on 10/13/14.
+//  Copyright (c) 2014 雷一鸣. All rights reserved.
 //
 
-#import "RMIndexPath.h"
+#import "LYMIndexPath.h"
 
 
-@implementation RMIndexPath
+@implementation LYMIndexPath
 
 
 + (instancetype)IndexPathWithRow:(NSUInteger)row column:(NSUInteger)column {
-    RMIndexPath * indexPath = [[RMIndexPath alloc] init];
+    LYMIndexPath * indexPath = [[LYMIndexPath alloc] init];
     indexPath.row = row;
     indexPath.column = column;
     return indexPath;
@@ -24,11 +24,11 @@
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-    RMIndexPath * copy = [[self class] IndexPathWithRow:self.row column:self.column];
+    LYMIndexPath * copy = [[self class] IndexPathWithRow:self.row column:self.column];
     return copy;
 }
 
-- (BOOL)isEqual:(RMIndexPath *)object {
+- (BOOL)isEqual:(LYMIndexPath *)object {
     BOOL isEqual = NO;
     if (self.row == object.row && self.column == object.column) {
         isEqual = YES;

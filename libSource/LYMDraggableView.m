@@ -1,31 +1,31 @@
 //
-//  RMDraggableView.m
+//  LYMDraggableView.m
 //  UltimatePractice
 //
-//  Created by Jerry Ray on 10/8/14.
-//  Copyright (c) 2014 RayManning. All rights reserved.
+//  Created by Lei Yiming on 10/8/14.
+//  Copyright (c) 2014 雷一鸣. All rights reserved.
 //
 
-#import "RMDraggableView.h"
+#import "LYMDraggableView.h"
 
 
 
-@interface RMDraggableView ()
-<RMDraggableViewCellDelegate>
+@interface LYMDraggableView ()
+<LYMDraggableViewCellDelegate>
 
 @property (nonatomic, assign) NSUInteger maxColumn;
 @property (nonatomic, assign) BOOL isEditing;
 
 @property (nonatomic, retain) NSMutableArray * muArrCells;
-@property (nonatomic, retain) RMIndexPath * destinedIndexPath;
-@property (nonatomic, retain) RMIndexPath * originalIndexPath;
+@property (nonatomic, retain) LYMIndexPath * destinedIndexPath;
+@property (nonatomic, retain) LYMIndexPath * originalIndexPath;
 
 
 @end
 
-@implementation RMDraggableView
+@implementation LYMDraggableView
 
-- (instancetype)initWithFrame:(CGRect)frame layoutType:(RMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn cornerRadius:(NSNumber *)cornerRadiusValue {
+- (instancetype)initWithFrame:(CGRect)frame layoutType:(LYMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn cornerRadius:(NSNumber *)cornerRadiusValue {
     self = [super init];
     if (self) {
         if (frame.size.height != 0.0) {
@@ -59,7 +59,7 @@
 }
 
 - (void)dealloc {
-    for (RMDraggableViewCell * cell in self.muArrCells) {
+    for (LYMDraggableViewCell * cell in self.muArrCells) {
         cell.delegate = nil;
     }
 }
@@ -70,25 +70,25 @@
 
 
 #pragma mark - Private methods
-- (RMIndexPath *)indexPathFromIndex:(NSInteger)index {
+- (LYMIndexPath *)indexPathFromIndex:(NSInteger)index {
     NSInteger row = 0;
     NSInteger column = 0;
     if (self.maxColumn != 0) {
         row = index / self.maxColumn;
         column = index % self.maxColumn;
     }
-    RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
+    LYMIndexPath * indexPath = [LYMIndexPath IndexPathWithRow:row column:column];
     return indexPath;
 }
 
-- (NSUInteger)indexFromIndexPath:(RMIndexPath *)indexPath {
+- (NSUInteger)indexFromIndexPath:(LYMIndexPath *)indexPath {
     return indexPath.row * self.maxColumn + indexPath.column;
 }
 
 - (void)changeIndexPathValueForCells {
     for (int i = 0; i < self.muArrCells.count; i ++) {
-        RMIndexPath * indexPath = [self indexPathFromIndex:i];
-        RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:i];
+        LYMIndexPath * indexPath = [self indexPathFromIndex:i];
+        LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:i];
         cell.indexPath.row = indexPath.row;
         cell.indexPath.column = indexPath.column;
     }
@@ -136,7 +136,7 @@
         }
         
         for (int column = 0; column < numberOfColumns; column ++) {
-            RMIndexPath * indexPath = [RMIndexPath IndexPathWithRow:row column:column];
+            LYMIndexPath * indexPath = [LYMIndexPath IndexPathWithRow:row column:column];
             NSUInteger index = [self indexFromIndexPath:indexPath];
             //Reset frame of cells except the cell dragging.
             BOOL needChangeLayout = YES;
@@ -145,7 +145,7 @@
                 needChangeLayout = NO;
             }
             if (index < self.muArrCells.count && needChangeLayout) {
-                RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+                LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
                 cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
             }
             //add up coordinates
@@ -201,7 +201,7 @@
     //Create cells and get draggable view's max frame
     NSInteger numberOfItems = [self numberOfItems];
     for (int index = 0; index < numberOfItems; index ++) {
-        RMDraggableViewCell * cell = [self.dataSource draggableView:self cellForIndex:index];
+        LYMDraggableViewCell * cell = [self.dataSource draggableView:self cellForIndex:index];
         cell.delegate = self;
         cell.indexPath = [self indexPathFromIndex:index];
         
@@ -256,13 +256,13 @@
 }
 
 - (void)removeCellAtIndex:(NSUInteger)index {
-    RMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+    LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
     [cell removeFromSuperview];
     [self.muArrCells removeObject:cell];
     [self resetLayout];
 }
 
-- (RMDraggableViewCell *)cellAtIndex:(NSUInteger)index {
+- (LYMDraggableViewCell *)cellAtIndex:(NSUInteger)index {
     if (index < self.muArrCells.count) {
         return [self.muArrCells objectAtIndex:index];
     } else {
@@ -270,27 +270,27 @@
     }
 }
 
-#pragma mark - RMDraggableViewCell Delegate
-- (void)draggableViewCell:(RMDraggableViewCell *)cell tappedWithIndexPath:(RMIndexPath *)indexPath {
+#pragma mark - LYMDraggableViewCell Delegate
+- (void)draggableViewCell:(LYMDraggableViewCell *)cell tappedWithIndexPath:(LYMIndexPath *)indexPath {
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didSelectCellAtIndex:)]) {
         [self.delegate draggableView:self didSelectCellAtIndex:[self indexFromIndexPath:indexPath]];
     }
 }
 
-- (void)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(RMIndexPath *)indexPath {
+- (void)draggableViewCell:(LYMDraggableViewCell *)cell cornerBtnPressedWithIndexPath:(LYMIndexPath *)indexPath {
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnPressedAtIndex:)]) {
         [self.delegate draggableView:self cornerBtnPressedAtIndex:[self indexFromIndexPath:indexPath]];
     }
 }
 
-- (CGSize)draggableViewCell:(RMDraggableViewCell *)cell cornerBtnSizeWithIndexPath:(RMIndexPath *)indexPath {
+- (CGSize)draggableViewCell:(LYMDraggableViewCell *)cell cornerBtnSizeWithIndexPath:(LYMIndexPath *)indexPath {
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnSizeAtIndex:)]) {
         return [self.delegate draggableView:self cornerBtnSizeAtIndex:[self indexFromIndexPath:indexPath]];
     }
     return CGSizeMake(15.0, 15.0);
 }
 
-- (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedBeginWithIndexPath:(RMIndexPath *)indexPath {
+- (void)draggableViewCell:(LYMDraggableViewCell *)cell longPressedBeginWithIndexPath:(LYMIndexPath *)indexPath {
     if (self.originalIndexPath == nil) {
         self.originalIndexPath = [indexPath copy];
     }
@@ -299,14 +299,14 @@
     }
 }
 
-- (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(RMIndexPath *)indexPath {
+- (void)draggableViewCell:(LYMDraggableViewCell *)cell longPressedDidMoveWithIndexPath:(LYMIndexPath *)indexPath {
     //Store the indexpath value of cell which is dragging.
     self.destinedIndexPath = indexPath;
 
     CGRect draggingCellFrame = cell.frame;
     NSArray * arrCells = [NSArray arrayWithArray:self.muArrCells];
     for (int i = 0; i < arrCells.count; i ++) {
-        RMDraggableViewCell * enumeratedCell = [arrCells objectAtIndex:i];
+        LYMDraggableViewCell * enumeratedCell = [arrCells objectAtIndex:i];
         if (cell == enumeratedCell) {
             continue;
         }
@@ -342,7 +342,7 @@
     } completion:nil];
 }
 
-- (void)draggableViewCell:(RMDraggableViewCell *)cell longPressedEndWithIndexPath:(RMIndexPath *)indexPath {
+- (void)draggableViewCell:(LYMDraggableViewCell *)cell longPressedEndWithIndexPath:(LYMIndexPath *)indexPath {
     self.destinedIndexPath = nil;
     //Use easeInOut style to play animation.
     [UIView animateWithDuration:0.4 animations:^{
@@ -357,7 +357,7 @@
     }];
 }
 
-- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellEditingScaleUpFactorWithIndexPath:(RMIndexPath *)indexPath {
+- (CGFloat)draggableViewCell:(LYMDraggableViewCell *)cell cellEditingScaleUpFactorWithIndexPath:(LYMIndexPath *)indexPath {
     CGFloat factor = 1.0;
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cellEditingScaleUpFactorAtIndex:)]) {
         factor = [self.delegate draggableView:self cellEditingScaleUpFactorAtIndex:[self indexFromIndexPath:indexPath]];
@@ -365,7 +365,7 @@
     return factor;
 }
 
-- (CGFloat)draggableViewCell:(RMDraggableViewCell *)cell cellImageCornerRadiusAtIndexPath:(RMIndexPath *)indexPath {
+- (CGFloat)draggableViewCell:(LYMDraggableViewCell *)cell cellImageCornerRadiusAtIndexPath:(LYMIndexPath *)indexPath {
     CGFloat cornerRadius = cell.imageView.frame.size.width / 2.0;
     if (self.cellImageCornerRadius != nil) {
         cornerRadius = [self.cellImageCornerRadius doubleValue];

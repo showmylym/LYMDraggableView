@@ -1,18 +1,18 @@
 //
-//  RMDraggableViewCell.m
+//  LYMDraggableViewCell.m
 //  UltimatePractice
 //
-//  Created by Jerry Ray on 10/9/14.
-//  Copyright (c) 2014 RayManning. All rights reserved.
+//  Created by Lei Yiming on 10/9/14.
+//  Copyright (c) 2014 雷一鸣. All rights reserved.
 //
 
-#import "RMDraggableViewCell.h"
-#import "RMDraggableView.h"
+#import "LYMDraggableViewCell.h"
+#import "LYMDraggableView.h"
 
 #define VSpace (4.0)
 #define LabelHeight (18.0)
 
-@interface RMDraggableViewCell ()
+@interface LYMDraggableViewCell ()
 
 
 //Gesture
@@ -32,9 +32,9 @@
 
 @end
 
-@implementation RMDraggableViewCell
+@implementation LYMDraggableViewCell
 
-- (instancetype)initWithSize:(CGSize)size style:(RMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(RMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
+- (instancetype)initWithSize:(CGSize)size style:(LYMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(LYMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
     
     self = [super initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
     if (self) {
@@ -54,17 +54,11 @@
         self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.width)];
         [self.contentView addSubview:self.imageView];
         
-        if (cellType == RMDraggableViewCellTypeDefault) {
+        if (cellType == LYMDraggableViewCellTypeDefault) {
             self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
             self.textLabel.font = [UIFont systemFontOfSize:12.0];
-            float version = [[[UIDevice currentDevice] systemVersion] floatValue];
-            if (version < 6.0) {
-                self.textLabel.textAlignment = UITextAlignmentCenter;
-                self.textLabel.lineBreakMode = UILineBreakModeClip;
-            } else {
-                self.textLabel.textAlignment = NSTextAlignmentCenter;
-                self.textLabel.lineBreakMode = NSLineBreakByClipping;
-            }
+            self.textLabel.textAlignment = NSTextAlignmentCenter;
+            self.textLabel.lineBreakMode = NSLineBreakByClipping;
             [self.contentView addSubview:self.textLabel];
         }
         
@@ -161,7 +155,7 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
         cornerBtnFrame.size = [self.delegate draggableViewCell:self cornerBtnSizeWithIndexPath:self.indexPath];
     }
-    if (self.cornerBtnStyle == RMDraggableViewCellCornerBtnStyleTopRight) {
+    if (self.cornerBtnStyle == LYMDraggableViewCellCornerBtnStyleTopRight) {
         cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
     } else {
         cornerBtnFrame.origin.x = 0.0;
