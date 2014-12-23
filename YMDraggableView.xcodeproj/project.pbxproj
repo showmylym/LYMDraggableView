@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		671783AC1A35351B00E7ED5A /* image.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 671783AB1A35351B00E7ED5A /* image.bundle */; };
-		93CE77741A35E0700024B21A /* common.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 93CE77731A35E0700024B21A /* common.bundle */; };
+		534F95A61A49CAFD00CF78FE /* Common.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 534F95A51A49CAFD00CF78FE /* Common.xcassets */; };
+		534F95AA1A49CE8900CF78FE /* image.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 534F95A91A49CE8900CF78FE /* image.bundle */; };
 		93D0C74E1A346CB700BD643C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 93D0C74D1A346CB700BD643C /* main.m */; };
 		93D0C7511A346CB700BD643C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 93D0C7501A346CB700BD643C /* AppDelegate.m */; };
 		93D0C7541A346CB700BD643C /* LYMDragDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 93D0C7531A346CB700BD643C /* LYMDragDemoViewController.m */; };
@@ -33,8 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		671783AB1A35351B00E7ED5A /* image.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = image.bundle; path = libSource/image.bundle; sourceTree = SOURCE_ROOT; };
-		93CE77731A35E0700024B21A /* common.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = common.bundle; sourceTree = "<group>"; };
+		534F95A51A49CAFD00CF78FE /* Common.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Common.xcassets; sourceTree = "<group>"; };
+		534F95A91A49CE8900CF78FE /* image.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = image.bundle; sourceTree = "<group>"; };
 		93D0C7481A346CB700BD643C /* YMDraggableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YMDraggableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		93D0C74C1A346CB700BD643C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93D0C74D1A346CB700BD643C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -140,14 +140,14 @@
 		93D0C7721A346D6900BD643C /* libSource */ = {
 			isa = PBXGroup;
 			children = (
-				93CE77731A35E0700024B21A /* common.bundle */,
-				671783AB1A35351B00E7ED5A /* image.bundle */,
+				534F95A91A49CE8900CF78FE /* image.bundle */,
 				93D0C7731A346D6900BD643C /* LYMDraggableView.h */,
 				93D0C7741A346D6900BD643C /* LYMDraggableView.m */,
 				93D0C7751A346D6900BD643C /* LYMDraggableViewCell.h */,
 				93D0C7761A346D6900BD643C /* LYMDraggableViewCell.m */,
 				93D0C7771A346D6900BD643C /* LYMIndexPath.h */,
 				93D0C7781A346D6900BD643C /* LYMIndexPath.m */,
+				534F95A51A49CAFD00CF78FE /* Common.xcassets */,
 			);
 			path = libSource;
 			sourceTree = SOURCE_ROOT;
@@ -242,10 +242,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				93D0C7571A346CB700BD643C /* Main.storyboard in Resources */,
+				534F95AA1A49CE8900CF78FE /* image.bundle in Resources */,
 				93D0C75C1A346CB700BD643C /* LaunchScreen.xib in Resources */,
+				534F95A61A49CAFD00CF78FE /* Common.xcassets in Resources */,
 				93D0C7591A346CB700BD643C /* Images.xcassets in Resources */,
-				671783AC1A35351B00E7ED5A /* image.bundle in Resources */,
-				93CE77741A35E0700024B21A /* common.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

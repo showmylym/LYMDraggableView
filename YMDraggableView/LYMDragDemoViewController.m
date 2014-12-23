@@ -27,6 +27,9 @@
 @property (nonatomic, strong) NSArray * imageSourceArray;
 @property (nonatomic, strong) NSArray * titleSourceArray;
 
+@property (nonatomic, strong) NSBundle * commonBundle;
+@property (nonatomic, strong) NSBundle * imageBundle;
+
 /**
  *  Index of item will be deleted
  */
@@ -62,6 +65,11 @@
 
 #pragma mark - Construct
 - (void)basicConstruction {
+    NSString * commonBundlePath = [[NSBundle mainBundle] pathForResource:@"common" ofType:@"bundle"];
+    self.commonBundle = [NSBundle bundleWithPath:commonBundlePath];
+    NSString * imageBundlePath = [[NSBundle mainBundle] pathForResource:@"image" ofType:@"bundle"];
+    self.imageBundle = [NSBundle bundleWithPath:imageBundlePath];
+    
     self.view.backgroundColor = [UIColor colorWithRed:212.0/255.0 green:212.0/255.0 blue:212.0/255.0 alpha:1.0];
     
     self.screenSize = [[UIScreen mainScreen] bounds].size;
@@ -181,7 +189,8 @@
         cell.textLabel.text = dataModel.title;
         
         //Corner button
-        [cell.cornerBtn setImage:[UIImage imageNamed:@"dragViewAddBtn"] forState:UIControlStateNormal];
+
+        [cell.cornerBtn setImage:[UIImage imageNamed:@"dragviewcellcornerdel"] forState:UIControlStateNormal];
         
         //Head image
         UIImage * headImage = [UIImage imageWithContentsOfFile:dataModel.imageFilePath];
