@@ -123,13 +123,13 @@
 
 
 - (NSString *)randomTitle {
-    int randomIndex = rand() % self.titleSourceArray.count;
+    int randomIndex = arc4random() % self.titleSourceArray.count;
     return [self.titleSourceArray objectAtIndex:randomIndex];
 }
 
 - (NSString *)randomImagePath {
     if (self.imageSourceArray.count > 0) {
-        int randomIndex = rand() % (self.imageSourceArray.count + 6);
+        int randomIndex = arc4random() % (self.imageSourceArray.count + 6);
         if (randomIndex < self.imageSourceArray.count) {
             return [self.imageSourceArray objectAtIndex:randomIndex];
         } else {
