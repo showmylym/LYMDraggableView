@@ -2,7 +2,7 @@
 //  RMIndexPath.h
 //  UltimatePractice
 //
-//  Created by Lei Yiming on 10/13/14.
+//  Created by Jerry Ray on 10/13/14.
 //  Copyright (c) 2014 雷一鸣. All rights reserved.
 //
 
