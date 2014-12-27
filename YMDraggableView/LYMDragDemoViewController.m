@@ -95,7 +95,6 @@
     self.mainScrollView.delegate = self;
     self.mainScrollView.scrollEnabled = YES;
     self.mainScrollView.scrollsToTop = YES;
-    self.mainScrollView.contentSize = self.mainScrollView.frame.size;
     [self.view addSubview:self.mainScrollView];
 }
 
@@ -105,6 +104,17 @@
     self.mainDraggableView.dataSource = self;
     self.mainDraggableView.backgroundColor = [UIColor whiteColor];
     [self.mainScrollView addSubview:self.mainDraggableView];
+
+}
+
+- (void)resetNavigationBarButtonItem {
+    UIBarButtonItem * barButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneButtonPressed:)];
+    if (self.mainDraggableView.isEditing == YES) {
+        self.navigationItem.rightBarButtonItem = barButtonItem;
+    } else {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
+
 }
 
 #pragma mark - Private methods
@@ -147,13 +157,15 @@
     }
 }
 
-- (void)resetRightBarButtonItem {
-    // Reset draggableView editing state
-    [self.mainDraggableView endEditing];
-}
-
 - (void)saveEditingResults {
     // TODO: Do something of saving...
+}
+
+#pragma mark - Control events handler
+- (void)doneButtonPressed:(UIBarButtonItem *)sender {
+    // Reset draggableView editing state
+    [self.mainDraggableView endEditing];
+    [self saveEditingResults];
 }
 
 #pragma mark - Draggable View delegate and datasourc
@@ -177,6 +189,8 @@
 
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     LYMDraggableViewCell * cell = [[LYMDraggableViewCell alloc] initWithSize:[self cellSizeInDraggableView:draggableView] style:LYMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:LYMDraggableViewCellCornerBtnStyleTopRight];
+#warning Background color for test
+    cell.contentView.backgroundColor = [UIColor redColor];
     NSArray * dataArr = self.resultsArray;
     if (draggableView.isEditing) {
         dataArr = self.editingArray;
@@ -240,7 +254,13 @@
 }
 
 - (void)draggableView:(LYMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame {
-    self.mainScrollView.contentSize = draggableView.frame.size;
+    CGSize scrollableContentSize = draggableView.frame.size;
+    if (scrollableContentSize.height <= self.mainScrollView.frame.size.height) {
+        // In order to make scrollView scrollable at any situation.
+        scrollableContentSize.height = self.screenSize.height - [[UIApplication sharedApplication] statusBarFrame].size.height - self.navigationController.navigationBar.frame.size.height + 1;
+    }
+    self.mainScrollView.contentSize = scrollableContentSize;
+    
 }
 
 - (void)draggableView:(LYMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index {
@@ -314,12 +334,16 @@
 - (void)draggableViewBeginEditing:(LYMDraggableView *)draggableView {
     self.editingArray = [NSMutableArray arrayWithArray:self.resultsArray];
     self.willBeDeletedIndex = 0;
+    [self resetNavigationBarButtonItem];
+
 }
 
 - (void)draggableViewEndEditing:(LYMDraggableView *)draggableView {
     [self saveEditingResults];
     self.editingArray = nil;
     self.willBeDeletedIndex = 0;
+    [self resetNavigationBarButtonItem];
+
 }
 
 
