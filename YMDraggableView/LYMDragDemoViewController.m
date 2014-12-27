@@ -13,7 +13,7 @@
 #define Alert_Tag_Delete_Item 1000
 
 @interface LYMDragDemoViewController ()
-<UIScrollViewDelegate, LYMDraggableViewDataSource, LYMDraggableViewDelegate>
+<UIScrollViewDelegate, LYMDraggableViewDataSource, LYMDraggableViewDelegate, UIAlertViewDelegate>
 
 // Controls
 @property (nonatomic, strong) LYMDraggableView * mainDraggableView;
@@ -27,13 +27,10 @@
 @property (nonatomic, strong) NSArray * imageSourceArray;
 @property (nonatomic, strong) NSArray * titleSourceArray;
 
-@property (nonatomic, strong) NSBundle * commonBundle;
-@property (nonatomic, strong) NSBundle * imageBundle;
-
 /**
- *  Index of item will be deleted
+ *  Index of item will be deleted. nil is none of items will be deleted.
  */
-@property (nonatomic, assign) NSInteger willBeDeletedIndex;
+@property (nonatomic, strong) NSNumber * willBeDeletedIndex;
 
 // Screen size to fit controls
 @property (nonatomic, assign) CGSize screenSize;
@@ -63,14 +60,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc {
+    self.mainDraggableView.delegate = nil;
+    self.mainDraggableView.dataSource = nil;
+    self.mainScrollView.delegate = nil;
+}
+
 #pragma mark - Construct
 - (void)basicConstruction {
-    NSString * commonBundlePath = [[NSBundle mainBundle] pathForResource:@"common" ofType:@"bundle"];
-    self.commonBundle = [NSBundle bundleWithPath:commonBundlePath];
-    NSString * imageBundlePath = [[NSBundle mainBundle] pathForResource:@"image" ofType:@"bundle"];
-    self.imageBundle = [NSBundle bundleWithPath:imageBundlePath];
     
-    self.view.backgroundColor = [UIColor colorWithRed:212.0/255.0 green:212.0/255.0 blue:212.0/255.0 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:232.0/255.0 green:232.0/255.0 blue:232.0/255.0 alpha:1.0];
     
     self.screenSize = [[UIScreen mainScreen] bounds].size;
     self.screenScaleFactor = self.screenSize.width / 320.0;
@@ -189,8 +188,6 @@
 
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     LYMDraggableViewCell * cell = [[LYMDraggableViewCell alloc] initWithSize:[self cellSizeInDraggableView:draggableView] style:LYMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:LYMDraggableViewCellCornerBtnStyleTopRight];
-#warning Background color for test
-    cell.contentView.backgroundColor = [UIColor redColor];
     NSArray * dataArr = self.resultsArray;
     if (draggableView.isEditing) {
         dataArr = self.editingArray;
@@ -229,6 +226,8 @@
         } else {
             cell.imageView.image = headImage;
         }
+#warning Background color for test
+        cell.contentView.backgroundColor = [UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:190.0/255.0 alpha:1.0];
     } else {
         //添加收藏按钮
         cell.imageView.image = [UIImage imageNamed:@"dragViewAddBtn"];
@@ -249,6 +248,16 @@
             dataModel.imageFilePath = [self randomImagePath];
             self.resultsArray = [self.resultsArray arrayByAddingObject:dataModel];
             [draggableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //scroll to bottom
+                CGRect scrollViewBottomRect;
+                scrollViewBottomRect.origin.x = 0.0;
+                scrollViewBottomRect.origin.y = draggableView.frame.size.height - 1.0;
+                scrollViewBottomRect.size.height = 1.0;
+                scrollViewBottomRect.size.width = 1.0;
+                [self.mainScrollView scrollRectToVisible:scrollViewBottomRect animated:YES];
+            });
+
         }
     }
 }
@@ -266,7 +275,7 @@
 - (void)draggableView:(LYMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index {
     UIAlertView * alert = nil;
     if (self.editingArray.count > index) {
-        self.willBeDeletedIndex = index;
+        self.willBeDeletedIndex = @(index);
         LYMDraggableDataModel * dataModel = [self.editingArray objectAtIndex:index];
         NSString * title = [NSString stringWithFormat:@"Are you sure to delete %@？", dataModel.title];
         alert = [[UIAlertView alloc] initWithTitle:title
@@ -288,6 +297,7 @@
         LYMDraggableDataModel * fromDataModel = [self.editingArray objectAtIndex:fromIndex];
         [self.editingArray removeObject:fromDataModel];
         [self.editingArray insertObject:fromDataModel atIndex:toIndex];
+        self.resultsArray = [self.editingArray copy];
     }
 }
 
@@ -333,7 +343,7 @@
 // Draggableview editing state change
 - (void)draggableViewBeginEditing:(LYMDraggableView *)draggableView {
     self.editingArray = [NSMutableArray arrayWithArray:self.resultsArray];
-    self.willBeDeletedIndex = 0;
+    self.willBeDeletedIndex = nil;
     [self resetNavigationBarButtonItem];
 
 }
@@ -341,9 +351,27 @@
 - (void)draggableViewEndEditing:(LYMDraggableView *)draggableView {
     [self saveEditingResults];
     self.editingArray = nil;
-    self.willBeDeletedIndex = 0;
+    self.willBeDeletedIndex = nil;
     [self resetNavigationBarButtonItem];
 
+}
+
+#pragma mark - UIAlertView delegate 
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == Alert_Tag_Delete_Item) {
+        if (self.willBeDeletedIndex != nil && buttonIndex != alertView.cancelButtonIndex) {
+            NSInteger index = [self.willBeDeletedIndex integerValue];
+            if (index < self.editingArray.count && index > 0) {
+                [self.editingArray removeObjectAtIndex:index];
+                self.resultsArray = [self.editingArray copy];
+                //One of way to reload
+                [self.mainDraggableView removeCellAtIndex:index];
+                //The other way to reload. Continue shaking after reloading all cell
+//                [self.mainDraggableView reloadData];
+//                [self.mainDraggableView continueShakingWhenEditing];
+            }
+        }
+    }
 }
 
 

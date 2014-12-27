@@ -238,9 +238,7 @@
     self.frame = draggableViewNewFrame;
     [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
-        });
+        [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
     }
 }
 
@@ -271,7 +269,18 @@
     //reorder indexpath of cell
     [self reorderIndexPathOfCells];
     //redraw UI
-    [self resetLayout];
+    CGRect draggableViewNewFrame = [self resetLayout];
+    
+    //perform call back
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:willResizeWithFrame:)]) {
+        [self.delegate draggableView:self willResizeWithFrame:draggableViewNewFrame];
+    }
+    self.frame = draggableViewNewFrame;
+    [self.muArrCells makeObjectsPerformSelector:@selector(setNeedsDisplay)];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:didResizeWithFrame:)]) {
+        [self.delegate draggableView:self didResizeWithFrame:draggableViewNewFrame];
+    }
+
 }
 
 - (LYMDraggableViewCell *)cellAtIndex:(NSUInteger)index {
