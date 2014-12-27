@@ -75,7 +75,7 @@
         [self addGestureRecognizer:self.tapGesture];
         
         self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureTriggered:)];
-        self.longPressGesture.minimumPressDuration = 0.5;
+        self.longPressGesture.minimumPressDuration = 0.2;
         [self addGestureRecognizer:self.longPressGesture];
         
         //data
