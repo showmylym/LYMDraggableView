@@ -171,6 +171,13 @@
     }
 }
 
+- (void)reorderIndexPathOfCells {
+    for (int i = 0; i < self.muArrCells.count; i ++) {
+        LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:i];
+        cell.indexPath = [self indexPathFromIndex:i];
+    }
+}
+
 
 #pragma mark - Public methods
 - (NSUInteger)numberOfItems {
@@ -257,8 +264,13 @@
 
 - (void)removeCellAtIndex:(NSUInteger)index {
     LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
+    //remove cell from view
     [cell removeFromSuperview];
+    //remove cell from datasource
     [self.muArrCells removeObject:cell];
+    //reorder indexpath of cell
+    [self reorderIndexPathOfCells];
+    //redraw UI
     [self resetLayout];
 }
 
