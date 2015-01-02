@@ -37,6 +37,8 @@
 // A factor value to 320.0 width of screen.
 @property (nonatomic, assign) CGFloat screenScaleFactor;
 
+@property (nonatomic, assign) BOOL hasClickedAddBtn;
+
 
 @end
 
@@ -70,11 +72,12 @@
 - (void)basicConstruction {
     
     self.view.backgroundColor = [UIColor colorWithRed:232.0/255.0 green:232.0/255.0 blue:232.0/255.0 alpha:1.0];
-    
+
     self.screenSize = [[UIScreen mainScreen] bounds].size;
     self.screenScaleFactor = self.screenSize.width / 320.0;
     self.titleSourceArray = [self allTitles];
     self.imageSourceArray = [self allImageFilePaths];
+    self.hasClickedAddBtn = NO;
     
     NSMutableArray * constructedDataArray = [NSMutableArray arrayWithCapacity:100];
     for (int i = 0; i < 20; i ++) {
@@ -90,7 +93,16 @@
 }
 
 - (void)constructScrollView {
-    self.mainScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    CGRect scrollViewFrame =
+    {
+        .origin.x = 0.0,
+        .origin.y = 0.0,
+        .size.width = self.view.frame.size.width,
+        .size.height = self.view.frame.size.height - 8.0,
+        // 8.0 is margin of scrollView to bottom.
+    };
+    
+    self.mainScrollView = [[UIScrollView alloc] initWithFrame:scrollViewFrame];
     self.mainScrollView.delegate = self;
     self.mainScrollView.scrollEnabled = YES;
     self.mainScrollView.scrollsToTop = YES;
@@ -211,15 +223,15 @@
             } else {
                 name = [name substringFromIndex:name.length - 1];
             }
-            UILabel * imageLabel = [[UILabel alloc] initWithFrame:cell.imageView.frame];
-            [cell.imageView addSubview:imageLabel];
+            UILabel * imageLabel        = [[UILabel alloc] initWithFrame:cell.imageView.frame];
             imageLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            imageLabel.textAlignment = NSTextAlignmentCenter;
-            imageLabel.font = [UIFont systemFontOfSize:38.0];
-            imageLabel.backgroundColor = [UIColor clearColor];
-            imageLabel.textColor = [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0];
-            imageLabel.text = name;
-            
+            imageLabel.textAlignment    = NSTextAlignmentCenter;
+            imageLabel.font             = [UIFont systemFontOfSize:38.0];
+            imageLabel.backgroundColor  = [UIColor clearColor];
+            imageLabel.textColor        = [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0];
+            imageLabel.text             = name;
+            [cell.imageView addSubview:imageLabel];
+
             //给imageView设置颜色图片
             UIColor * imageColor = [UIColor colorWithRed:230.0/255.0 green:230.0/255.0 blue:230.0/255.0 alpha:1.0];
             cell.imageView.backgroundColor = imageColor;
@@ -243,32 +255,30 @@
 
         } else {
             // 添加按钮
+            self.hasClickedAddBtn = YES;
             LYMDraggableDataModel * dataModel = [LYMDraggableDataModel new];
             dataModel.title = [self randomTitle];
             dataModel.imageFilePath = [self randomImagePath];
             self.resultsArray = [self.resultsArray arrayByAddingObject:dataModel];
             [draggableView reloadData];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                //scroll to bottom
-                CGRect scrollViewBottomRect;
-                scrollViewBottomRect.origin.x = 0.0;
-                scrollViewBottomRect.origin.y = draggableView.frame.size.height - 1.0;
-                scrollViewBottomRect.size.height = 1.0;
-                scrollViewBottomRect.size.width = 1.0;
-                [self.mainScrollView scrollRectToVisible:scrollViewBottomRect animated:YES];
-            });
-
         }
     }
 }
 
 - (void)draggableView:(LYMDraggableView *)draggableView didResizeWithFrame:(CGRect)frame {
-    CGSize scrollableContentSize = draggableView.frame.size;
-    if (scrollableContentSize.height <= self.mainScrollView.frame.size.height) {
-        // In order to make scrollView scrollable at any situation.
-        scrollableContentSize.height = self.screenSize.height - [[UIApplication sharedApplication] statusBarFrame].size.height - self.navigationController.navigationBar.frame.size.height + 1;
+    //Content size of scroll view should be equal to draggableView.frame.size in normal situation.
+    self.mainScrollView.contentSize = draggableView.frame.size;
+
+    if (self.hasClickedAddBtn == YES) {
+        self.hasClickedAddBtn = NO;
+        //scroll to bottom if click Btn add to add a new item.
+        CGRect scrollViewBottomRect;
+        scrollViewBottomRect.origin.x = 0.0;
+        scrollViewBottomRect.origin.y = self.mainScrollView.contentSize.height - 1.0;
+        scrollViewBottomRect.size.height = 1.0;
+        scrollViewBottomRect.size.width = 1.0;
+        [self.mainScrollView scrollRectToVisible:scrollViewBottomRect animated:YES];
     }
-    self.mainScrollView.contentSize = scrollableContentSize;
     
 }
 
@@ -293,7 +303,7 @@
 
 - (void)draggableView:(LYMDraggableView *)draggableView moveItemAndTouchUpFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
     if (fromIndex < self.editingArray.count && toIndex < self.editingArray.count) {
-        NSLog(@"This item was just moving，from %ld to %ld", fromIndex, toIndex);
+        NSLog(@"This item was just moving，from %ld to %ld", (unsigned long)fromIndex, (unsigned long)toIndex);
         LYMDraggableDataModel * fromDataModel = [self.editingArray objectAtIndex:fromIndex];
         [self.editingArray removeObject:fromDataModel];
         [self.editingArray insertObject:fromDataModel atIndex:toIndex];
