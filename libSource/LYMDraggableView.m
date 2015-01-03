@@ -229,8 +229,8 @@
         cell.delegate = self;
         cell.indexPath = [self indexPathFromIndex:index];
         
-        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
-            targetCanReorder = [self.dataSource draggableView:self canMoveAtIndex:index];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
+            targetCanReorder = [self.delegate draggableView:self canMoveAtIndex:index];
         }
         if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:canEditingAtIndex:)]) {
             canEdit = [self.delegate draggableView:self canEditingAtIndex:index];
@@ -361,8 +361,8 @@
         if (enumeratedCellFrame.origin.y < draggingCellEndY && enumeratedCellFrame.origin.y + enumeratedCellFrame.size.height > draggingCellEndY) {
             isYContain = YES;
         }
-        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
-            targetCanReorder = [self.dataSource draggableView:self canMoveAtIndex:i];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:canMoveAtIndex:)]) {
+            targetCanReorder = [self.delegate draggableView:self canMoveAtIndex:i];
         }
         if (isXContain && isYContain && targetCanReorder) {
             //Insert dragging cell into this index
