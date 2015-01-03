@@ -78,7 +78,7 @@ typedef enum {
 @property (nonatomic) BOOL canShake;
 @property (nonatomic) BOOL canEdit;
 
-- (instancetype)initWithSize:(CGSize)size style:(LYMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(LYMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
+- (instancetype)initWithCellSize:(CGSize)size contentSize:(CGSize)contentSize type:(LYMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(LYMDraggableViewCellCornerBtnStyle)cornerBtnStyle;
 
 - (void)startShaking;
 - (void)endShaking;

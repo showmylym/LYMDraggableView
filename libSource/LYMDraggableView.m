@@ -102,16 +102,24 @@
 - (CGRect)resetLayout {
     NSUInteger numberOfItems = [self numberOfItems];
     
-    CGSize cellSize = [self.delegate cellSizeInDraggableView:self];
-    CGFloat viewWidth = self.frame.size.width;
+    CGSize cellSize        = [self.delegate cellSizeInDraggableView:self];
+    CGSize cellContentSize = [self.delegate cellContentViewSizeInDraggableView:self];
+    CGSize cornerBtnSize   = [self.delegate cellCornerBtnSizeInDraggableView:self];
+    
     CGFloat hSpace = 0.0;
     CGFloat hMargin = 0.0;
     if (self.hMargin == MarginAutoCaled) {
-        hMargin = (viewWidth - (cellSize.width * self.maxColumn)) / (self.maxColumn + 1);
+        hMargin = (self.frame.size.width - cellSize.width * self.maxColumn) / (self.maxColumn + 1);
         hSpace = hMargin;
     } else {
         hMargin = self.hMargin;
-        hSpace = (viewWidth - (cellSize.width * self.maxColumn) - hMargin * 2) / (self.maxColumn - 1);
+        hSpace = (self.frame.size.width - cellSize.width * self.maxColumn - hMargin * 2) / (self.maxColumn - 1);
+    }
+    if (hMargin < 0.0) {
+        hMargin = 0.0;
+    }
+    if (hSpace < 0.0) {
+        hSpace = 0.0;
     }
     
     CGFloat vMargin = self.vMargin;
@@ -120,6 +128,11 @@
     CGFloat x = hMargin;
     CGFloat y = vMargin;
     
+    //Check if cells is out of draggableView
+    if (cellSize.width * self.maxColumn + hMargin * 2 + hSpace * (self.maxColumn - 1) > self.frame.size.width) {
+        NSLog(@"Warning!!! Draggable cell will be out of draggableView, please check cell size of draggableView!");
+    }
+
     CGFloat draggableViewHeight = 0.0;
     //Create cells and get draggable view's max frame
     NSInteger numberOfRows = numberOfItems / self.maxColumn;
@@ -141,12 +154,16 @@
             //Reset frame of cells except the cell dragging.
             BOOL needChangeLayout = YES;
             if (self.destinedIndexPath != nil && index == [self indexFromIndexPath:self.destinedIndexPath]) {
-                //The cell is dragging, needn't to reset its frame. It locates where is finger staying.
+                //It won't change frame of dragging cell if it locates the beginning zone.
                 needChangeLayout = NO;
             }
             if (index < self.muArrCells.count && needChangeLayout) {
                 LYMDraggableViewCell * cell = [self.muArrCells objectAtIndex:index];
                 cell.frame = CGRectMake(x, y, cellSize.width, cellSize.height);
+                cell.contentView.frame = CGRectMake((cell.frame.size.width - cellContentSize.width) / 2.0,
+                                                    cornerBtnSize.height / 2.0,
+                                                    cellContentSize.width,
+                                                    cellContentSize.height);
             }
             //add up coordinates
             x += cellSize.width + hSpace;
@@ -305,8 +322,8 @@
 }
 
 - (CGSize)draggableViewCell:(LYMDraggableViewCell *)cell cornerBtnSizeWithIndexPath:(LYMIndexPath *)indexPath {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(draggableView:cornerBtnSizeAtIndex:)]) {
-        return [self.delegate draggableView:self cornerBtnSizeAtIndex:[self indexFromIndexPath:indexPath]];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cellCornerBtnSizeInDraggableView:)]) {
+        return [self.delegate cellCornerBtnSizeInDraggableView:self];
     }
     return CGSizeMake(15.0, 15.0);
 }

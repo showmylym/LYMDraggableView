@@ -39,7 +39,6 @@ typedef enum {
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index;
 
 @optional
-- (BOOL)draggableView:(LYMDraggableView *)draggableView canMoveAtIndex:(NSUInteger)index;
 - (void)draggableView:(LYMDraggableView *)draggableView moveItemAndTouchUpFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
@@ -50,19 +49,20 @@ typedef enum {
 @protocol LYMDraggableViewDelegate <NSObject>
 
 @required
+- (CGSize)cellContentViewSizeInDraggableView:(LYMDraggableView *)draggableView;
+- (CGSize)cellCornerBtnSizeInDraggableView:(LYMDraggableView *)draggableView;
 - (CGSize)cellSizeInDraggableView:(LYMDraggableView *)draggableView;
-
 
 @optional
 
 //corner btn callback
 - (void)draggableView:(LYMDraggableView *)draggableView cornerBtnPressedAtIndex:(NSUInteger)index;
-- (CGSize)draggableView:(LYMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index;
-- (CGPoint)draggableView:(LYMDraggableView *)draggableView cornerBtnOffsetAtIndex:(NSUInteger)index;
 
 //appearance callback
 - (BOOL)draggableView:(LYMDraggableView *)draggableView canShakeWhenEditingAtIndex:(NSUInteger)index;
 - (BOOL)draggableView:(LYMDraggableView *)draggableView canEditingAtIndex:(NSUInteger)index;
+- (BOOL)draggableView:(LYMDraggableView *)draggableView canMoveAtIndex:(NSUInteger)index;
+
 - (CGFloat)draggableView:(LYMDraggableView *)draggableView cellEditingScaleUpFactorAtIndex:(NSUInteger)index;
 
 //operation callback
@@ -95,6 +95,7 @@ typedef enum {
 @property (nonatomic, strong) NSNumber * cellImageCornerRadius;
 
 @property (nonatomic, assign, readonly) BOOL isEditing;
+@property (nonatomic, assign, readonly) NSUInteger maxColumn;
 
 /**
  *  Initialize draggable view.

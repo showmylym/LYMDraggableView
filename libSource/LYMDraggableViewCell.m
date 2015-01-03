@@ -34,7 +34,7 @@
 
 @implementation LYMDraggableViewCell
 
-- (instancetype)initWithSize:(CGSize)size style:(LYMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(LYMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
+- (instancetype)initWithCellSize:(CGSize)size contentSize:(CGSize)contentSize type:(LYMDraggableViewCellType)cellType cornerBtnStyleWhenShaking:(LYMDraggableViewCellCornerBtnStyle)cornerBtnStyle {
     
     self = [super initWithFrame:CGRectMake(0.0, 0.0, size.width, size.height)];
     if (self) {
@@ -46,27 +46,35 @@
         self.isShaking = NO;
         
         //cell content view
-        self.contentView = [[UIView alloc] initWithFrame:self.frame];
+        self.contentView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, contentSize.width, contentSize.height)];
         self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         [self addSubview:self.contentView];
         
-        //circle image view
-        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, size.width, size.width)];
+        //Basic controls on cell.contentView
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, contentSize.width, contentSize.width)];
         [self.contentView addSubview:self.imageView];
         
-        if (cellType == LYMDraggableViewCellTypeDefault) {
-            self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, size.width, LabelHeight)];
-            self.textLabel.font = [UIFont systemFontOfSize:12.0];
-            self.textLabel.textAlignment = NSTextAlignmentCenter;
-            self.textLabel.lineBreakMode = NSLineBreakByClipping;
-            [self.contentView addSubview:self.textLabel];
+        switch (cellType) {
+            case LYMDraggableViewCellTypeDefault: {
+                self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, self.imageView.frame.size.height + VSpace, contentSize.width, LabelHeight)];
+                self.textLabel.font = [UIFont systemFontOfSize:12.0];
+                self.textLabel.textAlignment = NSTextAlignmentCenter;
+                self.textLabel.lineBreakMode = NSLineBreakByClipping;
+                [self.contentView addSubview:self.textLabel];
+
+            } break;
+            case LYMDraggableViewCellTypeOnlyIcon: {
+                
+            } break;
+            default:
+                break;
         }
         
         self.cornerBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.cornerBtn addTarget:self action:@selector(cornerBtnPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self.cornerBtn setImage:[UIImage imageNamed:@"contactFavIconCorner"] forState:UIControlStateNormal];
         self.cornerBtn.hidden = YES;
-        [self.contentView addSubview:self.cornerBtn];
+        [self addSubview:self.cornerBtn];
         
         self.cornerBtnStyle = cornerBtnStyle;
         
@@ -78,7 +86,6 @@
         self.longPressGesture.minimumPressDuration = 0.2;
         [self addGestureRecognizer:self.longPressGesture];
         
-        //data
         //cal scaled space, to adapt screen after iPhone 6
         CGSize screenSize = [[UIScreen mainScreen] bounds].size;
         self.screenZoomingFactor = screenSize.width / 320.0;
@@ -91,7 +98,7 @@
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
     // Drawing code
-    [self changeControlsFrameWithNewCellFrame:self.frame];
+    [self changeControlsFrameWithNewCellFrame:self.contentView.frame];
 }
 
 
@@ -155,13 +162,20 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:cornerBtnSizeWithIndexPath:)]) {
         cornerBtnFrame.size = [self.delegate draggableViewCell:self cornerBtnSizeWithIndexPath:self.indexPath];
     }
-    if (self.cornerBtnStyle == LYMDraggableViewCellCornerBtnStyleTopRight) {
-        cornerBtnFrame.origin.x = rect.size.width - cornerBtnFrame.size.width;
-    } else {
-        cornerBtnFrame.origin.x = 0.0;
+    switch (self.cornerBtnStyle) {
+        case LYMDraggableViewCellCornerBtnStyleTopLeft: {
+            cornerBtnFrame.origin.x = rect.origin.x - cornerBtnFrame.size.width / 2.0;
+            cornerBtnFrame.origin.y = rect.origin.y - cornerBtnFrame.size.height / 2.0;
+        } break;
+        case LYMDraggableViewCellCornerBtnStyleTopRight: {
+            cornerBtnFrame.origin.x = rect.size.width + rect.origin.x - cornerBtnFrame.size.width / 2.0;
+            cornerBtnFrame.origin.y = rect.origin.y - cornerBtnFrame.size.height / 2.0;
+        } break;
     }
-    cornerBtnFrame.origin.y = 0.0;
     self.cornerBtn.frame = cornerBtnFrame;
+    if (self.indexPath.row == 0 && self.indexPath.column == 0) {
+        NSLog(@"contentView frame:%@, cornerBtn frame:%@, cell frame:%@", NSStringFromCGRect(rect), NSStringFromCGRect(cornerBtnFrame), NSStringFromCGRect(self.frame));
+    }
 
 }
 
@@ -186,6 +200,8 @@
                 [self.delegate draggableViewCell:self longPressedBeginWithIndexPath:self.indexPath];
             }
             [self.superview bringSubviewToFront:self];
+            [self bringSubviewToFront:self.cornerBtn];
+            
             //store beginning location
             self.beginningPoint = [gesture locationInView:self.superview];
             self.beginningCenter = self.center;
@@ -196,7 +212,7 @@
             scaleUpRect.size.height *= cellEditingScaleFactor;
             self.frame = scaleUpRect;
             self.center = center;
-            [self changeControlsFrameWithNewCellFrame:self.frame];
+            [self changeControlsFrameWithNewCellFrame:self.contentView.frame];
             
         } break;
         case UIGestureRecognizerStateChanged: {
@@ -217,7 +233,7 @@
             scaleDownRect.size.height /= cellEditingScaleFactor;
             self.frame = scaleDownRect;
             self.center = endPoint;
-            [self changeControlsFrameWithNewCellFrame:self.frame];
+            [self changeControlsFrameWithNewCellFrame:self.contentView.frame];
             
             if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:longPressedEndWithIndexPath:)]) {
                 [self.delegate draggableViewCell:self longPressedEndWithIndexPath:self.indexPath];

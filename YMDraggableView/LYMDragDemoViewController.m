@@ -80,7 +80,7 @@
     self.hasClickedAddBtn = NO;
     
     NSMutableArray * constructedDataArray = [NSMutableArray arrayWithCapacity:100];
-    for (int i = 0; i < 20; i ++) {
+    for (int i = 0; i < 18; i ++) {
         LYMDraggableDataModel * dataModel = [[LYMDraggableDataModel alloc] init];
         dataModel.title = [self randomTitle];
         dataModel.imageFilePath = [self randomImagePath];
@@ -110,7 +110,7 @@
 }
 
 - (void)constructDraggableView {
-    self.mainDraggableView = [[LYMDraggableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.screenSize.width, 0.0) layoutType:LYMDraggableViewLayoutByColumnNum horizontalMargin:15.0 verticalMargin:10.0 vSpace:10.0 maxColumn:4.0 cornerRadius:nil];
+    self.mainDraggableView = [[LYMDraggableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.screenSize.width, 0.0) layoutType:LYMDraggableViewLayoutByColumnNum horizontalMargin:0.0 verticalMargin:0.0 vSpace:4.0 maxColumn:4.0 cornerRadius:nil];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
     self.mainDraggableView.backgroundColor = [UIColor whiteColor];
@@ -190,16 +190,23 @@
     return numberOfCells;
 }
 
-- (CGSize)cellSizeInDraggableView:(LYMDraggableView *)draggableView {
-    return CGSizeMake(55.0 * self.screenScaleFactor, 75.0 * self.screenScaleFactor);
+- (CGSize)cellContentViewSizeInDraggableView:(LYMDraggableView *)draggableView {
+    return CGSizeMake(50.0 * self.screenScaleFactor, 75.0 * self.screenScaleFactor);
 }
 
-- (CGSize)draggableView:(LYMDraggableView *)draggableView cornerBtnSizeAtIndex:(NSUInteger)index {
-    return CGSizeMake(30.0 * self.screenScaleFactor, 30.0 * self.screenScaleFactor);
+- (CGSize)cellCornerBtnSizeInDraggableView:(LYMDraggableView *)draggableView {
+    return CGSizeMake(25.0 * self.screenScaleFactor, 25.0 * self.screenScaleFactor);
+}
+
+- (CGSize)cellSizeInDraggableView:(LYMDraggableView *)draggableView {
+    //ContentView is in middle of cell, then white span equal to cornerBtn Width/2.0 is on the left and right.
+    CGFloat width = [self cellContentViewSizeInDraggableView:draggableView].width + [self cellCornerBtnSizeInDraggableView:draggableView].width;
+    CGFloat height = [self cellContentViewSizeInDraggableView:draggableView].height + [self cellCornerBtnSizeInDraggableView:draggableView].height / 2.0;
+    return CGSizeMake(width, height);
 }
 
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
-    LYMDraggableViewCell * cell = [[LYMDraggableViewCell alloc] initWithSize:[self cellSizeInDraggableView:draggableView] style:LYMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:LYMDraggableViewCellCornerBtnStyleTopRight];
+    LYMDraggableViewCell * cell = [[LYMDraggableViewCell alloc] initWithCellSize:[self cellSizeInDraggableView:draggableView] contentSize:[self cellContentViewSizeInDraggableView:draggableView] type:LYMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:LYMDraggableViewCellCornerBtnStyleTopLeft];
     NSArray * dataArr = self.resultsArray;
     if (draggableView.isEditing) {
         dataArr = self.editingArray;
@@ -210,7 +217,6 @@
         cell.textLabel.text = dataModel.title;
         
         //Corner button
-
         [cell.cornerBtn setImage:[UIImage imageNamed:@"dragviewcellcornerdel"] forState:UIControlStateNormal];
         
         //Head image
@@ -240,6 +246,8 @@
         }
 #warning Background color for test
         cell.contentView.backgroundColor = [UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:190.0/255.0 alpha:1.0];
+        cell.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:220.0/255.0 alpha:1.0];
+        cell.textLabel.backgroundColor = [UIColor yellowColor];
     } else {
         //添加收藏按钮
         cell.imageView.image = [UIImage imageNamed:@"dragViewAddBtn"];
@@ -252,7 +260,9 @@
 - (void)draggableView:(LYMDraggableView *)draggableView didSelectCellAtIndex:(NSUInteger)index {
     if (draggableView.isEditing == NO) {
         if (index < self.resultsArray.count) {
-
+            NSString * title = [[self.resultsArray objectAtIndex:index] title];
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Clicked message" message:title delegate:nil cancelButtonTitle:nil otherButtonTitles:@"Got it", nil];
+            [alert show];
         } else {
             // 添加按钮
             self.hasClickedAddBtn = YES;
