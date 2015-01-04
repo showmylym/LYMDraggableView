@@ -366,7 +366,7 @@
 }
 
 - (CGFloat)draggableView:(LYMDraggableView *)draggableView cellEditingScaleUpFactorAtIndex:(NSUInteger)index {
-    return 1.2;
+    return 1.4;
 }
 
 
