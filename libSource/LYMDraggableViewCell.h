@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "LYMIndexPath.h"
+#import "LYMCell.h"
 
 #define DegreesToRadians(degrees) (degrees * M_PI / 180)
 #define RadiansToDegrees(radians) (radians * 180 / M_PI)
@@ -55,7 +56,7 @@ typedef enum {
 
 
 
-@interface LYMDraggableViewCell : UIView
+@interface LYMDraggableViewCell : UIControl
 
 @property (nonatomic, weak) id<LYMDraggableViewCellDelegate> delegate;
 @property (nonatomic) LYMDraggableViewCellCornerBtnStyle cornerBtnStyle;

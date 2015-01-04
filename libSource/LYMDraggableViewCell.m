@@ -83,7 +83,7 @@
         [self addGestureRecognizer:self.tapGesture];
         
         self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureTriggered:)];
-        self.longPressGesture.minimumPressDuration = 0.2;
+        self.longPressGesture.minimumPressDuration = 0.5;
         [self addGestureRecognizer:self.longPressGesture];
         
         //cal scaled space, to adapt screen after iPhone 6
@@ -182,6 +182,11 @@
 - (void)tapGestureTriggered:(UITapGestureRecognizer *)gesture {
     if (self.delegate && [self.delegate respondsToSelector:@selector(draggableViewCell:tappedWithIndexPath:)]) {
         [self.delegate draggableViewCell:self tappedWithIndexPath:self.indexPath];
+        __block UIColor * originalBackgroundColor = self.backgroundColor;
+        self.backgroundColor = [UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:210.0/255.0 alpha:1.0];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.backgroundColor = originalBackgroundColor;
+        });
     }
 }
 

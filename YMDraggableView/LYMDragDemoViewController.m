@@ -50,11 +50,17 @@
     [self basicConstruction];
     [self constructScrollView];
     [self constructDraggableView];
+    [self addNotificationListener];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.mainDraggableView reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.mainDraggableView endEditing];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,7 +78,7 @@
 - (void)basicConstruction {
     
     self.view.backgroundColor = [UIColor colorWithRed:232.0/255.0 green:232.0/255.0 blue:232.0/255.0 alpha:1.0];
-
+    self.navigationItem.title = @"Demo";
     self.screenSize = [[UIScreen mainScreen] bounds].size;
     self.screenScaleFactor = self.screenSize.width / 320.0;
     self.titleSourceArray = [self allTitles];
@@ -126,6 +132,10 @@
         self.navigationItem.rightBarButtonItem = nil;
     }
 
+}
+
+- (void)addNotificationListener {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationBecomeInactive:) name:UIApplicationWillResignActiveNotification object:nil];
 }
 
 #pragma mark - Private methods
@@ -245,9 +255,9 @@
             cell.imageView.image = headImage;
         }
 #warning Background color for test
-        cell.contentView.backgroundColor = [UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:190.0/255.0 alpha:1.0];
-        cell.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:220.0/255.0 alpha:1.0];
-        cell.textLabel.backgroundColor = [UIColor yellowColor];
+//        cell.contentView.backgroundColor = [UIColor colorWithRed:210.0/255.0 green:210.0/255.0 blue:190.0/255.0 alpha:1.0];
+//        cell.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:220.0/255.0 alpha:1.0];
+//        cell.textLabel.backgroundColor = [UIColor yellowColor];
     } else {
         //添加收藏按钮
         cell.imageView.image = [UIImage imageNamed:@"dragViewAddBtn"];
@@ -392,6 +402,11 @@
             }
         }
     }
+}
+
+#pragma mark - Notification CallBack
+- (void)handleApplicationBecomeInactive:(NSNotification *)note {
+    [self.mainDraggableView endEditing];
 }
 
 
