@@ -321,7 +321,7 @@
     alert = nil;
 }
 
-- (void)draggableView:(LYMDraggableView *)draggableView moveItemAndTouchUpFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
+- (void)draggableView:(LYMDraggableView *)draggableView didMoveCellFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex {
     if (fromIndex < self.editingArray.count && toIndex < self.editingArray.count) {
         NSLog(@"This item was just moving，from %ld to %ld", (unsigned long)fromIndex, (unsigned long)toIndex);
         LYMDraggableDataModel * fromDataModel = [self.editingArray objectAtIndex:fromIndex];
@@ -366,7 +366,7 @@
 }
 
 - (CGFloat)draggableView:(LYMDraggableView *)draggableView cellEditingScaleUpFactorAtIndex:(NSUInteger)index {
-    return 1.4;
+    return 1.3;
 }
 
 

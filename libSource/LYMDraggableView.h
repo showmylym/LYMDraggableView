@@ -39,7 +39,7 @@ typedef enum {
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index;
 
 @optional
-- (void)draggableView:(LYMDraggableView *)draggableView moveItemAndTouchUpFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+- (void)draggableView:(LYMDraggableView *)draggableView didMoveCellFromIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
 
 @end
 

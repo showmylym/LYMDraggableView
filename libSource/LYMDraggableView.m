@@ -392,10 +392,10 @@
     [UIView animateWithDuration:0.4 animations:^{
         [self resetLayout];
     } completion:^(BOOL finished) {
-        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:moveItemAndTouchUpFromIndex:toIndex:)]) {
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(draggableView:didMoveCellFromIndex:toIndex:)]) {
             CGFloat fromIndex = [self indexFromIndexPath:self.originalIndexPath];
             CGFloat toIndex = [self indexFromIndexPath:indexPath];
-            [self.dataSource draggableView:self moveItemAndTouchUpFromIndex:fromIndex toIndex:toIndex];
+            [self.dataSource draggableView:self didMoveCellFromIndex:fromIndex toIndex:toIndex];
         }
         self.originalIndexPath = nil;
     }];
