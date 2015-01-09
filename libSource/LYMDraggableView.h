@@ -121,4 +121,16 @@ typedef enum {
 - (NSUInteger)numberOfItems;
 - (LYMDraggableViewCell *)cellAtIndex:(NSUInteger)index;
 
+/**
+ *  Calculate height of DraggableView for initialization.
+ *
+ *  @param vmargin    Margin to top or bottom.
+ *  @param cellHeight Height of draggableCell.
+ *  @param vSpace     Span between cells.
+ *  @param itemsCount total items number.
+ *
+ *  @return
+ */
+- (CGFloat)heightOfDraggableViewFromVMargin:(CGFloat)vmargin cellHeight:(CGFloat)cellHeight vSpace:(CGFloat)vSpace itemsCount:(NSUInteger)itemsCount;
+
 @end
