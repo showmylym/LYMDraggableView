@@ -328,6 +328,9 @@
         [self.editingArray removeObject:fromDataModel];
         [self.editingArray insertObject:fromDataModel atIndex:toIndex];
         self.resultsArray = [self.editingArray copy];
+        //Reload data to reset all cell index. Make the functions canEdit, canShake, canMove method work.
+        [draggableView reloadData];
+        [draggableView continueShakingWhenEditing];
     }
 }
 
