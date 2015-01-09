@@ -12,16 +12,16 @@
 #define MarginAutoCaled   -1.0
 #define SpaceAutoCaled    -1.0
 
-
+//scale-factor = UIScreenBoundsWidth / 320.0
 typedef enum {
     /**
-     *  保持cell的size不变，cell之间的列间距自适应。如果有足够空间，在当前行再插入一个cell。
-     *  Keep cell size consistent, auto-calculate the space between columns. If there is enough space, then put into current row one more cell.
+     *  保持cell的size不变，cell之间的列间距按照剩余空间自适应。如果有足够空间，在当前行再插入一个cell。
+     *  Keep cell size consistent, and auto-calculate the space between columns by free width left. If there is enough space, then put into current row one more cell.
      */
 //    LYMDraggableViewLayoutByCellSize = 0,
     /**
-     *  保持cell的size和列数不变，cell之间的列间距按照比例系数自适应。边距仍然保持不变，使用初始值。
-     *  Keep the number of columns and size consistent, auto-calculate the space between columns by scale-factor. Margin to draggableView is set by default value from initialization.
+     *  保持cell的size相对屏幕宽度成比例放大或缩小，列数不变，cell之间的列间距按照剩余空间自适应。边距仍然保持不变，使用初始值。
+     *  Keep the number of columns consistent, and keep size value multiplying the scale-factor based screen width. Auto-calculate the space between columns by free width left. Margin to draggableView is set by default value from initialization.
      */
     LYMDraggableViewLayoutByColumnNum = 1,
 } LYMDraggableViewLayout;

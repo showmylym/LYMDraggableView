@@ -331,7 +331,7 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(cellCornerBtnSizeInDraggableView:)]) {
         return [self.delegate cellCornerBtnSizeInDraggableView:self];
     }
-    return CGSizeMake(15.0, 15.0);
+    return CGSizeMake(25.0, 25.0);
 }
 
 - (void)draggableViewCell:(LYMDraggableViewCell *)cell longPressedBeginWithIndexPath:(LYMIndexPath *)indexPath {
