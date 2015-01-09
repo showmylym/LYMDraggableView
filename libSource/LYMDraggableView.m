@@ -308,7 +308,7 @@
     }
 }
 
-- (CGFloat)heightOfDraggableViewFromVMargin:(CGFloat)vmargin cellHeight:(CGFloat)cellHeight vSpace:(CGFloat)vSpace itemsCount:(NSUInteger)itemsCount {
++ (CGFloat)heightOfDraggableViewFromVMargin:(CGFloat)vmargin cellHeight:(CGFloat)cellHeight vSpace:(CGFloat)vSpace itemsCount:(NSUInteger)itemsCount {
     CGFloat numOfRow = ceil(itemsCount / 4.0);
     CGFloat draggableViewHeight = vmargin * 2 + cellHeight * numOfRow + vSpace * (numOfRow - 1);
     return draggableViewHeight;
