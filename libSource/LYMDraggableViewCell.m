@@ -133,6 +133,10 @@
 
 }
 
+- (void)setLongPressTriggerDuration:(NSTimeInterval)duration {
+    self.longPressGesture.minimumPressDuration = duration;
+}
+
 #pragma mark - Private methods
 - (void)changeControlsFrameWithNewCellFrame:(CGRect)rect {
     CGFloat margin = 0.0;

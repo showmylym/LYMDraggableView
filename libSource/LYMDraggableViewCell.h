@@ -82,5 +82,11 @@ typedef enum {
 
 - (void)startShaking;
 - (void)endShaking;
+/**
+ *  Set the duration of triggering long press gesture. The default value is 0.2 seconds.
+ *
+ *  @param duration
+ */
+- (void)setLongPressTriggerDuration:(NSTimeInterval)duration;
 
 @end

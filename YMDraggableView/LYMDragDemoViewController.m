@@ -217,6 +217,8 @@
 
 - (LYMDraggableViewCell *)draggableView:(LYMDraggableView *)draggableView cellForIndex:(NSUInteger)index {
     LYMDraggableViewCell * cell = [[LYMDraggableViewCell alloc] initWithCellSize:[self cellSizeInDraggableView:draggableView] contentSize:[self cellContentViewSizeInDraggableView:draggableView] type:LYMDraggableViewCellTypeDefault cornerBtnStyleWhenShaking:LYMDraggableViewCellCornerBtnStyleTopLeft];
+    //Set the duration of triggering long press gesture.
+//    [cell setLongPressTriggerDuration:0.2];
     NSArray * dataArr = self.resultsArray;
     if (draggableView.isEditing) {
         dataArr = self.editingArray;
