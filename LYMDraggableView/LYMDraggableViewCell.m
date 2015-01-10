@@ -177,10 +177,6 @@
         } break;
     }
     self.cornerBtn.frame = cornerBtnFrame;
-    if (self.indexPath.row == 0 && self.indexPath.column == 0) {
-        NSLog(@"contentView frame:%@, cornerBtn frame:%@, cell frame:%@", NSStringFromCGRect(rect), NSStringFromCGRect(cornerBtnFrame), NSStringFromCGRect(self.frame));
-    }
-
 }
 
 - (void)tapGestureTriggered:(UITapGestureRecognizer *)gesture {
