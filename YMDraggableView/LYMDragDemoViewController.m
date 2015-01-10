@@ -44,6 +44,7 @@
 
 @implementation LYMDragDemoViewController
 
+#pragma mark - View Controller
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -116,7 +117,13 @@
 }
 
 - (void)constructDraggableView {
-    self.mainDraggableView = [[LYMDraggableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.screenSize.width, 0.0) layoutType:LYMDraggableViewLayoutByColumnNum horizontalMargin:0.0 verticalMargin:0.0 vSpace:4.0 maxColumn:4.0 cornerRadius:nil];
+    self.mainDraggableView = [[LYMDraggableView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.screenSize.width, 0.0)
+                                                          layoutType:LYMDraggableViewLayoutByColumnNum
+                                                    horizontalMargin:0.0
+                                                      verticalMargin:0.0
+                                                              vSpace:4.0
+                                                           maxColumn:4.0
+                                                        cornerRadius:nil];
     self.mainDraggableView.delegate = self;
     self.mainDraggableView.dataSource = self;
     self.mainDraggableView.backgroundColor = [UIColor whiteColor];

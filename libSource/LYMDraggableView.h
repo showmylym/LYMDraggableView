@@ -109,7 +109,13 @@ typedef enum {
  *  @param cornerRadius  cornerRadius of cell image. The value is cellImageWidth/2.0 if set nil.
  *  @return
  */
-- (instancetype)initWithFrame:(CGRect)frame layoutType:(LYMDraggableViewLayout)layoutType horizontalMargin:(CGFloat)hMargin verticalMargin:(CGFloat)vMargin vSpace:(CGFloat)vSpace maxColumn:(NSUInteger)maxColumn cornerRadius:(NSNumber *)cornerRadiusValue;
+- (instancetype)initWithFrame:(CGRect)frame
+                   layoutType:(LYMDraggableViewLayout)layoutType
+             horizontalMargin:(CGFloat)hMargin
+               verticalMargin:(CGFloat)vMargin
+                       vSpace:(CGFloat)vSpace
+                    maxColumn:(NSUInteger)maxColumn
+                 cornerRadius:(NSNumber *)cornerRadiusValue;
 
 - (void)resizeWithFrame:(CGRect)frame;
 
@@ -131,6 +137,9 @@ typedef enum {
  *
  *  @return
  */
-+ (CGFloat)heightOfDraggableViewFromVMargin:(CGFloat)vmargin cellHeight:(CGFloat)cellHeight vSpace:(CGFloat)vSpace itemsCount:(NSUInteger)itemsCount;
++ (CGFloat)heightOfDraggableViewFromVMargin:(CGFloat)vmargin
+                                 cellHeight:(CGFloat)cellHeight
+                                     vSpace:(CGFloat)vSpace
+                                 itemsCount:(NSUInteger)itemsCount;
 
 @end
