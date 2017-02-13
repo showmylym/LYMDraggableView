@@ -12,7 +12,7 @@
 
 　　纵观iOS App市场，有类似实现效果的应用不少，如下截图：    
 ####*优酷视频iPad客户端*管理离线视频
-　　<img src="http://showmylym-blog.oss-cn-shenzhen.aliyuncs.com/test/2-1.gif" title="图片2-1" alt="图片2-1" width="480"/>    
+　　<img src="http://showmylym-blog.oss-cn-shenzhen.aliyuncs.com/2/2-1.gif" title="图片2-1" alt="图片2-1" width="480"/>    
 ####*微信讨论组*增删人员
 　　<img src="http://showmylym-blog.oss-cn-shenzhen.aliyuncs.com/2/2-2.gif" title="图片2-2" alt="图片2-2" width="480"/>    
 ####*有信收藏栏*
